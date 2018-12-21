@@ -49,6 +49,7 @@ class Task{
         $zipfile=time().".zip";
         if($zip->open($zipfile, \ZipArchive::CREATE)=== false){
             //todo 记录日志
+            echo "zip打开文件出错";
             exit();
         }
         //添加文本文件
@@ -81,6 +82,7 @@ class Task{
         $res=$oss->uploadFile(config("oss","bucket"),$ossFileName,$zipfile);
         if(!isset($res["info"]["url"])){
             //todo 记录日志
+            echo "上传oss出错";
         }
 
         //发送邮件
@@ -115,7 +117,7 @@ class Task{
         $mail->Body    = $msg;
         $mail->addAttachment($attchment);
 
-        $mail->send();
+        var_dump($mail->send());
     }
 
 
