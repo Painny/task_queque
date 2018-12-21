@@ -31,7 +31,6 @@ class Worker{
     {
         cli_set_process_title($this->name."_worker");
         $this->pid=getmypid();
-        echo "子进程:".$this->pid."初始化".PHP_EOL;
         $this->connectRedis();
         $this->doTask($taskData);
     }
@@ -47,16 +46,17 @@ class Worker{
         $redis->auth(config("redis","passwd"));
         $redis->select(config("redis","db"));
         $this->redis=$redis;
-        echo "子进程:".$this->pid."连接redis".PHP_EOL;
     }
 
     public function doTask($data)
     {
-        echo "子进程:".$this->pid."执行任务".PHP_EOL;
-        var_dump($data);
+
+        $task=new Task($data);
+        $task->execute();
         $this->redis->close();
-        echo "子进程:".$this->pid."退出".PHP_EOL;
+        //退出进程
         exit();
     }
+
 
 }
