@@ -38,7 +38,6 @@ class Task{
     //生成付款码资源
     private function makePayCode($data)
     {
-        var_dump($data);
         $email=$data["email"];
         $flag=$data["flag"];  //0二维码，1文本，2两者
         $key=$data["code_list_key"];
@@ -48,7 +47,7 @@ class Task{
         $payCode=$this->redis->sMembers($key);
 
         $zip=new \ZipArchive();
-        $zipfile=time().".zip";
+        $zipfile=time().rand(0,9).".zip";
         if($zip->open($zipfile, \ZipArchive::CREATE)=== false){
             //todo 记录日志
             echo "zip打开文件出错";
@@ -110,7 +109,7 @@ class Task{
         $mail->SMTPSecure = config("mail","encryption");            // Enable TLS encryption, `ssl` also accepted
 
         //Recipients
-        $mail->setFrom($this->mailUser, "寰视乾坤");
+        $mail->setFrom(config("mail","username"), "寰视乾坤");
         $mail->addAddress($addr);
 
         //Content
@@ -120,6 +119,7 @@ class Task{
         $mail->addAttachment($attchment);
 
         var_dump($mail->send());
+        echo $mail->ErrorInfo;
     }
 
 
