@@ -38,6 +38,7 @@ class Master{
         cli_set_process_title($this->name);
         //连接redis
         $this->connectRedis();
+        var_dump($this->redis->sMembers("pay_code_list_0"));exit();
 
         //todo 模拟丢任务
         $this->addTask();
