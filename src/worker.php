@@ -32,7 +32,6 @@ class Worker{
         cli_set_process_title($this->name."_worker");
         $this->pid=getmypid();
         $this->connectRedis();
-        var_dump($taskData);exit();
         $this->doTask($taskData);
     }
 

@@ -36,6 +36,7 @@ class Task{
     //生成付款码资源
     private function makePayCode($data)
     {
+        var_dump($data);
         $email=$data["email"];
         $flag=$data["flag"];  //0二维码，1文本，2两者
         $key=$data["code_list_key"];
