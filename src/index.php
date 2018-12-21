@@ -9,6 +9,7 @@
 $CFG=require_once "config.php";
 require_once "helper.php";
 require_once "master.php";
+require_once "worker.php";
 
 $master=new Master("task_queque");
 $master->run();
