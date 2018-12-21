@@ -6,8 +6,8 @@
  * Time: 9:32
  */
 
-$CFG=require_once "config.php";
-require_once "../vendor/autoload.php";
+require_once "./vendor/autoload.php";
+$CFG= require_once "./src/config.php";
 
 $master=new Master("task_queque");
 $master->run();
