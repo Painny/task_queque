@@ -68,13 +68,20 @@ class Task{
         }
 
         //添加二维码
+        $picArr=array();
         if($flag == 0 || $flag == 2){
             $qr=new QrCode();
             foreach ($payCode as $key => $code){
                 $qr->setText($code);
                 $qr->setSize(300);
                 $filename="payCode".$key.".png";
-                $zip->addFromString($filename,$qr->writeString());
+                //图片大于十张加入到压缩包中
+                if(count($payCode) > 10){
+                    $zip->addFromString($filename,$qr->writeString());
+                }else{  //直接发送
+                    $qr->writeFile($filename);
+                    $picArr[]=$filename;
+                }
             }
         }
         $zip->close(); //关闭处理的zip文件
@@ -91,14 +98,22 @@ class Task{
             echo "上传oss出错";
         }
 
+        $attchments=$picArr;
+        $attchments[]=$zipfile;
+
         //发送邮件
-        $this->sendEmail($email,"学生付款码文件","您申请的学生付款码已成功生成",$zipfile);
+        $this->sendEmail($email,"学生付款码文件","您申请的学生付款码已成功生成",$attchments);
         //删除文件
         unlink($zipfile);
+        if(count($picArr)){
+            foreach ($picArr as $pic){
+                unlink($pic);
+            }
+        }
     }
 
     //发邮件
-    private function sendEmail($addr,$subject,$msg,$attchment=null)
+    private function sendEmail($addr,$subject,$msg,$attchments=[])
     {
         $mail=new PHPMailer();
         $mail->SMTPDebug = 0;  // Enable verbose debug output
@@ -121,7 +136,11 @@ class Task{
         $mail->isHTML(false);                             // Set email format to HTML
         $mail->Subject = $subject;
         $mail->Body    = $msg;
-        $mail->addAttachment($attchment);
+
+        //添加附件
+        foreach ($attchments as $item){
+            $mail->addAttachment($item);
+        }
 
         if(!$mail->send()){
             //todo 记录日志
