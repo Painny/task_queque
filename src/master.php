@@ -39,9 +39,6 @@ class Master{
         //连接redis
         $this->connectRedis();
 
-        //todo 模拟丢任务
-        $this->addTask();
-
         //开始任务检测
         while (true){
             $taskData=$this->checkTask();
