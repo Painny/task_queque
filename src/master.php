@@ -60,8 +60,10 @@ class Master{
         for($i=0;$i<3;$i++){
             $this->redis->lPush(config("task","list"),"make_pay_code");
             $data=array(
-                "flag"          =>  0,
-                "code_list_key" =>  "pay_code_list_{$i}"
+                "flag"          =>  $i,
+                "code_list_key" =>  "pay_code_list_{$i}",
+                "email"         =>  "pengyu@cnhsqk.com",
+                "file"          =>  "test/pytest-{$i}.zip"
             );
             $this->redis->lPush("make_pay_code",json_encode($data));
         }
