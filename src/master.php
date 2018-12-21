@@ -63,6 +63,7 @@ class Master{
         if($pid == 0){
             cli_set_process_title($this->name."_worker");
             echo $task.PHP_EOL;
+            sleep(60);
             exit();
         }else{  //父进程,记录子进程信息
             $this->child_num++;
