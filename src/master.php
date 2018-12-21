@@ -107,12 +107,14 @@ class Master{
             return null;
         }
 
-        return $taskData;
+        return array("type"=>$taskType,"data"=>$taskData);
         /*
          * 生成学生付款码任务数据：
          *  {
          *      "flag":0|1|2,                               生成文件包含内容，0二维码，1文本，2两者
          *      "code_list_key":"pay_code_list_xxx"         存付款码列表的redis key
+         *      "email":"xxx@xxx.com"                       要发送的邮箱地址
+         *      "url":"xxx.zip"                             将要生成文件的名字
          *  }
          *
          *
