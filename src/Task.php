@@ -45,10 +45,10 @@ class Task{
 
         //所有的付款码
         $payCode=$this->redis->sMembers($key);
-
+        var_dump($payCode);
         $zip=new \ZipArchive();
         $zipfile=time().rand(0,9).".zip";
-        if($zip->open($zipfile, \ZipArchive::CREATE)=== false){
+        if($zip->open($zipfile, \ZipArchive::CREATE) === false){
             //todo 记录日志
             echo "zip打开文件出错";
             exit();
