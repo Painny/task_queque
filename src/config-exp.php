@@ -49,5 +49,12 @@ return array(
             //生成教师授权码
             "make_teacher_code"
         )
+    ),
+
+    "oss"   =>  array(
+        "access_key_id"     =>  "",
+        "access_key_secret" =>  "",
+        "endpoint"          =>  "",
+        "bucket"            =>  ""
     )
 );
