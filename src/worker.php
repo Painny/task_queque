@@ -51,7 +51,7 @@ class Worker{
     public function doTask($data)
     {
 
-        $task=new Task($data);
+        $task=new Task($this->redis,$data);
         $task->execute();
         $this->redis->close();
         //退出进程
