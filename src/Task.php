@@ -14,10 +14,12 @@ class Task{
 
     private $type;
     private $data;
+    private $redis;
 
-    public function __construct($data)
+    public function __construct($redis,$data)
     {
         $this->type=$data["type"];
+        $this->redis=$redis;
         $this->data=json_decode($data["data"],true);
     }
 
