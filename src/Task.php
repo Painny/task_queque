@@ -46,9 +46,10 @@ class Task{
 
         //所有的付款码
         $payCode=$this->redis->sMembers($key);
-        var_dump($payCode);
+
         if(!$payCode){
-            echo "没有数据";
+            //todo 记录日志
+            echo "没有授权码数据";
             exit();
         }
         $zip=new \ZipArchive();
@@ -123,8 +124,10 @@ class Task{
         $mail->Body    = $msg;
         $mail->addAttachment($attchment);
 
-        var_dump($mail->send());
-        echo $mail->ErrorInfo;
+        if(!$mail->send()){
+            //todo 记录日志
+            echo "邮件发送失败:".$mail->ErrorInfo;
+        }
     }
 
 
