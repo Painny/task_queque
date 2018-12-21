@@ -38,6 +38,7 @@ class Task{
     //生成付款码资源
     private function makePayCode($data)
     {
+        var_dump($data);
         $email=$data["email"];
         $flag=$data["flag"];  //0二维码，1文本，2两者
         $key=$data["code_list_key"];
@@ -46,6 +47,10 @@ class Task{
         //所有的付款码
         $payCode=$this->redis->sMembers($key);
         var_dump($payCode);
+        if(!$payCode){
+            echo "没有数据";
+            exit();
+        }
         $zip=new \ZipArchive();
         $zipfile=time().rand(0,9).".zip";
         if($zip->open($zipfile, \ZipArchive::CREATE) === false){
