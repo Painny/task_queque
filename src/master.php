@@ -80,7 +80,8 @@ class Master{
             config("redis","port")
         );
         $redis->auth(config("redis","passwd"));
-        $redis->select(config("redis","db"));
+        echo config("redis","db");
+        var_dump($redis->select(config("redis","db")));
         $this->redis=$redis;
     }
 
