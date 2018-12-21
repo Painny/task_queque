@@ -11,7 +11,8 @@ return array(
     "redis" =>  array(
         "host"  =>  "127.0.0.1",
         "port"  =>  "6379",
-        "passwd"=>  ""
+        "passwd"=>  "",
+        "db"    =>  4
     ),
 
     "mysql" =>  array(
@@ -35,5 +36,18 @@ return array(
         "path"  =>  realpath(dirname(__DIR__)).DIRECTORY_SEPARATOR."log",
         "file"  =>  "worklog.log",
         "fmt"   =>  "[time] [type] [msg] [code]:in [line] line"
+    ),
+
+    "task"  =>  array(
+        //任务列表redis的key
+        "list"  =>   "task_list",
+        //任务类型
+        "type"  =>  array(
+            //生成学生付款码
+            "make_pay_code",
+
+            //生成教师授权码
+            "make_teacher_code"
+        )
     )
 );
