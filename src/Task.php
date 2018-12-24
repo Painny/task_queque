@@ -53,11 +53,14 @@ class Task{
         }
         $zip=new \ZipArchive();
         $zipfile=time().rand(0,9).".zip";
-        if($zip->open($zipfile, \ZipArchive::CREATE) === false){
+        $tmp=$zip->open($zipfile, \ZipArchive::CREATE);
+        var_dump($tmp);exit();
+        if(!$tmp){
             //todo 记录日志
             echo "zip打开文件出错";
             exit();
         }
+
         //添加文本文件
         if($flag == 1 || $flag == 2){
             $txt="";
