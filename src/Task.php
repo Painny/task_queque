@@ -45,8 +45,10 @@ class Task{
         if($type == "make_pay_code"){
             $allCode=$this->redis->sMembers($key);
         }else{
-            $allCode=$this->redis->zRange($key,0,-1,true);
-            var_dump($allCode);
+            $tmp=$this->redis->zRange($key,0,-1,true);
+            $allCode=array_map(function ($value){
+                return intval($value);
+            },$tmp);
             $allCode=array_flip($allCode);
         }
         //取出数据后删除
