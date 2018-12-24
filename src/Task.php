@@ -118,7 +118,7 @@ class Task{
     private function sendEmail($addr,$subject,$msg,$attchments=[])
     {
         $mail=new PHPMailer();
-        $mail->SMTPDebug = 0;  // Enable verbose debug output
+        $mail->SMTPDebug = 1;  // Enable verbose debug output
         // Set mailer to use SMTP
         if(config("mail","driver") == "smtp"){
             $mail->isSMTP();

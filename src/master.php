@@ -42,7 +42,6 @@ class Master{
         //开始任务检测
         while (true){
             $taskData=$this->checkTask();
-            var_dump($taskData);
             if($taskData){
                 new Worker($this->name."_worker",$taskData);
             }
