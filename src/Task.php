@@ -27,26 +27,30 @@ class Task{
     {
         switch ($this->type){
             case 'make_pay_code':
-                $this->makePayCode($this->data);
-                break;
             case 'make_teacher_code':
-                //todo
+                $this->makeCode($this->data,$this->type);
                 break;
         }
     }
 
-    //生成付款码资源
-    private function makePayCode($data)
+    //生成资源(上传oss后发邮件)
+    private function makeCode($data,$type)
     {
         $email=$data["email"];
         $flag=$data["flag"];  //0二维码，1文本，2两者
         $key=$data["code_list_key"];
         $ossFileName=$data["file"];
 
-        //所有的付款码
-        $payCode=$this->redis->sMembers($key);
+        //所有的(教师、付款)码
+        if($type == "make_pay_code"){
+            $allCode=$this->redis->sMembers($key);
+        }else{
+            $allCode=$this->redis->zRange($key,0,-1,true);
+            $allCode=array_flip($allCode);
+        }
 
-        if(!$payCode){
+
+        if(!$allCode){
             //todo 记录日志
             echo "没有授权码数据";
             exit();
@@ -63,23 +67,31 @@ class Task{
         //添加文本文件
         if($flag == 1 || $flag == 2){
             $txt="";
-            foreach ($payCode as $code){
+            $numberTxt="";
+            foreach ($allCode as $index => $code){
                 $txt.=$code.PHP_EOL;
+                if($type == "make_teacher_code"){
+                    $numberTxt.=$index.PHP_EOL;
+                }
             }
             $zip->addFromString("code.txt",$txt);
+            //如果时教师授权码，短码也写入文本
+            if($type == "make_teacher_code"){
+                $zip->addFromString("codeNumber.txt",$numberTxt);
+            }
         }
 
         //添加二维码
         $picArr=array();
         if($flag == 0 || $flag == 2){
             $qr=new QrCode();
-            foreach ($payCode as $key => $code){
+            foreach ($allCode as $key => $code){
                 $qr->setText($code);
                 $qr->setSize(300);
-                $filename="payCode".$key.".png";
+                $filename="code-".$key.".png";
                 $zip->addFromString($filename,$qr->writeString());
                 //图片不超过10张，记录下来直接发送邮件
-                if(count($payCode) <= 10){
+                if(count($allCode) <= 10){
                     $qr->writeFile($filename);
                     $picArr[]=$filename;
                 }
@@ -98,13 +110,20 @@ class Task{
         if(!isset($res["info"]["url"])){
             //todo 记录日志
             echo "上传oss出错";
+            exit();
         }
 
         $attchments=$picArr;
         $attchments[]=$zipfile;
 
         //发送邮件
-        $this->sendEmail($email,"学生付款码文件","您申请的学生付款码已成功生成",$attchments);
+        if($type == "make_pay_code"){
+            $type="学生付款码";
+        }else if($type == "make_teacher_code"){
+            $type="教师授权码";
+        }
+
+        $this->sendEmail($email,"{$type}文件","您申请的{$type}已成功生成",$attchments);
         //删除文件
         unlink($zipfile);
         if(count($picArr)){
