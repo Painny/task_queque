@@ -48,7 +48,8 @@ class Task{
             $allCode=$this->redis->zRange($key,0,-1,true);
             $allCode=array_flip($allCode);
         }
-
+        //取出数据后删除
+        $this->redis->del($key);
 
         if(!$allCode){
             //todo 记录日志
@@ -71,7 +72,7 @@ class Task{
             foreach ($allCode as $index => $code){
                 $txt.=$code.PHP_EOL;
                 if($type == "make_teacher_code"){
-                    $numberTxt.=$index.PHP_EOL;
+                    $numberTxt.=$data["agent"].$index.PHP_EOL;
                 }
             }
             $zip->addFromString("code.txt",$txt);
