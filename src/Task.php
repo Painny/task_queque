@@ -46,6 +46,7 @@ class Task{
             $allCode=$this->redis->sMembers($key);
         }else{
             $allCode=$this->redis->zRange($key,0,-1,true);
+            var_dump($allCode);
             $allCode=array_flip($allCode);
         }
         //取出数据后删除
