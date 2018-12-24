@@ -93,7 +93,7 @@ class Task{
             config("oss","access_key_secret"),
             config("oss","endpoint")
         );
-        echo "压缩文件".$zipfile;
+
         $res=$oss->uploadFile(config("oss","bucket"),$ossFileName,$zipfile);
         if(!isset($res["info"]["url"])){
             //todo 记录日志
