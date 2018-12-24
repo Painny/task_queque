@@ -29,7 +29,7 @@ class Worker{
     //初始化
     private function init($taskData)
     {
-        cli_set_process_title($this->name."_worker");
+        cli_set_process_title($this->name);
         $this->pid=getmypid();
         $this->connectRedis();
         $this->doTask($taskData);
