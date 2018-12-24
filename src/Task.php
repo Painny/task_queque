@@ -53,9 +53,8 @@ class Task{
         }
         $zip=new \ZipArchive();
         $zipfile=time().rand(0,9).".zip";
-        $tmp=$zip->open($zipfile, \ZipArchive::CREATE);
-        var_dump($tmp);exit();
-        if(!$tmp){
+
+        if(!$zip->open($zipfile, \ZipArchive::CREATE)){
             //todo 记录日志
             echo "zip打开文件出错";
             exit();
@@ -78,10 +77,9 @@ class Task{
                 $qr->setText($code);
                 $qr->setSize(300);
                 $filename="payCode".$key.".png";
-                //图片大于十张加入到压缩包中
-                if(count($payCode) > 10){
-                    $zip->addFromString($filename,$qr->writeString());
-                }else{  //直接发送
+                $zip->addFromString($filename,$qr->writeString());
+                //图片不超过10张，记录下来直接发送邮件
+                if(count($payCode) <= 10){
                     $qr->writeFile($filename);
                     $picArr[]=$filename;
                 }
@@ -108,12 +106,12 @@ class Task{
         //发送邮件
         $this->sendEmail($email,"学生付款码文件","您申请的学生付款码已成功生成",$attchments);
         //删除文件
-//        unlink($zipfile);
-//        if(count($picArr)){
-//            foreach ($picArr as $pic){
-//                unlink($pic);
-//            }
-//        }
+        unlink($zipfile);
+        if(count($picArr)){
+            foreach ($picArr as $pic){
+                unlink($pic);
+            }
+        }
     }
 
     //发邮件
