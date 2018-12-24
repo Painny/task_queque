@@ -92,6 +92,7 @@ class Task{
             config("oss","access_key_secret"),
             config("oss","endpoint")
         );
+        echo "压缩文件".$zipfile;
         $res=$oss->uploadFile(config("oss","bucket"),$ossFileName,$zipfile);
         if(!isset($res["info"]["url"])){
             //todo 记录日志
@@ -104,12 +105,12 @@ class Task{
         //发送邮件
         $this->sendEmail($email,"学生付款码文件","您申请的学生付款码已成功生成",$attchments);
         //删除文件
-        unlink($zipfile);
-        if(count($picArr)){
-            foreach ($picArr as $pic){
-                unlink($pic);
-            }
-        }
+//        unlink($zipfile);
+//        if(count($picArr)){
+//            foreach ($picArr as $pic){
+//                unlink($pic);
+//            }
+//        }
     }
 
     //发邮件
