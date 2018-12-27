@@ -144,6 +144,6 @@ class Master{
 //处理子进程退出信号
 function childExit()
 {
-    echo "childExit done";
-    pcntl_wait($status,WNOHANG);
+    echo "childExit done ";
+    pcntl_wait($status);
 }
