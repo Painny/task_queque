@@ -44,8 +44,6 @@ class Master{
             $taskData=$this->checkTask();
 
             if($taskData){
-                $this->checkChild();
-
                 $worker=new Worker($this->name."_worker",$taskData);
                 $this->child_pid[]=$worker->pid;
             }
