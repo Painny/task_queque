@@ -25,7 +25,7 @@ class Master{
     //redis连接实例
     private $redis;
 
-    public function __construct($name,$max_child_num=3,$task_check_time=5)
+    public function __construct($name,$max_child_num=3,$task_check_time=10)
     {
         $this->name=$name;
         $this->max_child_num=$max_child_num;
@@ -34,19 +34,30 @@ class Master{
     }
 
     public function run(){
+        pcntl_signal(SIGCHLD,"childExit");
         //设置进程名
         cli_set_process_title($this->name);
         //连接redis
         $this->connectRedis();
-
         //开始任务检测
         while (true){
             $taskData=$this->checkTask();
             if($taskData){
-                new Worker($this->name."_worker",$taskData);
-            }
+                $this->checkChild();
 
+                $worker=new Worker($this->name."_worker",$taskData);
+                $this->child_pid[]=$worker->pid;
+            }
             sleep($this->task_check_time);
+        }
+    }
+
+    //检测子进程数量
+    private function checkChild()
+    {
+        //达到最大子进程数量，等待
+        while($this->child_num >= $this->max_child_num){
+            sleep(2);
         }
     }
 
@@ -123,4 +134,11 @@ class Master{
 
 
 
+}
+
+//处理子进程退出信号
+function childExit()
+{
+    echo "childExit done";
+    pcntl_wait($status,WNOHANG);
 }

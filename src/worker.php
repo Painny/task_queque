@@ -14,7 +14,7 @@ class Worker{
     private $redis;
 
     //进程pid
-    private $pid;
+    public $pid;
 
     public function __construct($name,$taskData)
     {
@@ -22,7 +22,15 @@ class Worker{
 
         if($pid == 0){
             $this->name=$name;
-            $this->init($taskData);
+            sleep(10);exit();
+            try{
+                $this->init($taskData);
+            }catch (Exception $exception){
+                echo "exception:".$exception->getMessage().PHP_EOL;
+                exit();
+            }
+        }else{
+            $this->pid=$pid;
         }
     }
 
