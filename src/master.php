@@ -34,7 +34,8 @@ class Master{
     }
 
     public function run(){
-        pcntl_signal(SIGCHLD,"childExit");
+        declare(ticks = 1);
+        var_dump(pcntl_signal(SIGCHLD,"childExit"));
         //设置进程名
         cli_set_process_title($this->name);
         //连接redis
@@ -45,7 +46,7 @@ class Master{
 
             $worker=new Worker($this->name."_worker",$taskData);
             $this->child_pid[]=$worker->pid;
-            
+
 //            if($taskData){
 //                $this->checkChild();
 //
