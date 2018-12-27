@@ -35,7 +35,7 @@ class Master{
 
     public function run(){
         declare(ticks = 1);
-        pcntl_signal(SIGCHLD,"childExit");
+        var_dump(pcntl_signal(SIGCHLD,"childExit"));
         //设置进程名
         cli_set_process_title($this->name);
         //连接redis
