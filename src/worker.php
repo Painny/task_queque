@@ -22,7 +22,6 @@ class Worker{
 
         if($pid == 0){
             $this->name=$name;
-            sleep(10);exit();
             try{
                 $this->init($taskData);
             }catch (Exception $exception){

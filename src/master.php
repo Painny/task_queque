@@ -25,7 +25,7 @@ class Master{
     //redis连接实例
     private $redis;
 
-    public function __construct($name,$max_child_num=3,$task_check_time=3)
+    public function __construct($name,$max_child_num=3,$task_check_time=10)
     {
         $this->name=$name;
         $this->max_child_num=$max_child_num;
@@ -34,8 +34,7 @@ class Master{
     }
 
     public function run(){
-        declare(ticks = 1);
-        pcntl_signal(SIGCHLD,"childExit");
+        pcntl_signal(SIGCHLD,SIG_IGN);
         //设置进程名
         cli_set_process_title($this->name);
         //连接redis
@@ -44,18 +43,15 @@ class Master{
         for ($i=0;$i<=2;$i++){
             $taskData=$this->checkTask();
 
-            $worker=new Worker($this->name."_worker",$taskData);
-            $this->child_pid[]=$worker->pid;
+            if($taskData){
+                $this->checkChild();
 
-//            if($taskData){
-//                $this->checkChild();
-//
-//                $worker=new Worker($this->name."_worker",$taskData);
-//                $this->child_pid[]=$worker->pid;
-//            }
+                $worker=new Worker($this->name."_worker",$taskData);
+                $this->child_pid[]=$worker->pid;
+            }
             sleep($this->task_check_time);
         }
-        sleep(35);
+
     }
 
     //检测子进程数量
@@ -140,11 +136,4 @@ class Master{
 
 
 
-}
-
-//处理子进程退出信号
-function childExit()
-{
-    echo "childExit done ";
-    pcntl_wait($status);
 }
