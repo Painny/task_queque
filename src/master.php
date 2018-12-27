@@ -25,7 +25,7 @@ class Master{
     //redis连接实例
     private $redis;
 
-    public function __construct($name,$max_child_num=3,$task_check_time=2)
+    public function __construct($name,$max_child_num=3,$task_check_time=5)
     {
         $this->name=$name;
         $this->max_child_num=$max_child_num;
