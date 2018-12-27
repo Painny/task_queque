@@ -40,14 +40,18 @@ class Master{
         //连接redis
         $this->connectRedis();
         //开始任务检测
-        while (true){
+        for ($i=0;$i<=2;$i++){
             $taskData=$this->checkTask();
-            if($taskData){
-                $this->checkChild();
 
-                $worker=new Worker($this->name."_worker",$taskData);
-                $this->child_pid[]=$worker->pid;
-            }
+            $worker=new Worker($this->name."_worker",$taskData);
+            $this->child_pid[]=$worker->pid;
+            
+//            if($taskData){
+//                $this->checkChild();
+//
+//                $worker=new Worker($this->name."_worker",$taskData);
+//                $this->child_pid[]=$worker->pid;
+//            }
             sleep($this->task_check_time);
         }
     }
