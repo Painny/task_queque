@@ -25,7 +25,7 @@ class Master{
     //redis连接实例
     private $redis;
 
-    public function __construct($name,$max_child_num=3,$task_check_time=5)
+    public function __construct($name,$max_child_num=3,$task_check_time=3)
     {
         $this->name=$name;
         $this->max_child_num=$max_child_num;
@@ -55,6 +55,7 @@ class Master{
 //            }
             sleep($this->task_check_time);
         }
+        sleep(35);
     }
 
     //检测子进程数量
