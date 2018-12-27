@@ -35,7 +35,7 @@ class Master{
 
     public function run(){
         declare(ticks = 1);
-        var_dump(pcntl_signal(SIGCHLD,"childExit"));
+        pcntl_signal(SIGCHLD,"childExit");
         //设置进程名
         cli_set_process_title($this->name);
         //连接redis
@@ -144,6 +144,6 @@ class Master{
 //处理子进程退出信号
 function childExit()
 {
-    echo "childExit done".PHP_EOL;
+    echo "childExit done";
     pcntl_wait($status,WNOHANG);
 }
