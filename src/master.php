@@ -34,13 +34,13 @@ class Master{
     }
 
     public function run(){
-//        pcntl_signal(SIGCHLD,SIG_IGN);
+        pcntl_signal(SIGCHLD,SIG_IGN);
         //设置进程名
         cli_set_process_title($this->name);
         //连接redis
         $this->connectRedis();
         //开始任务检测
-        for ($i=0;$i<=2;$i++){
+        while (true){
             $taskData=$this->checkTask();
 
             if($taskData){
