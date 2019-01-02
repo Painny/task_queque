@@ -33,9 +33,10 @@ return array(
     ),
 
     "log"   =>  array(
-        "path"  =>  realpath(dirname(__DIR__)).DIRECTORY_SEPARATOR."log",
-        "file"  =>  "worklog.log",
-        "fmt"   =>  "[time] [type] [msg] [code]:in [line] line"
+        "path"      =>  realpath(dirname(__DIR__)).DIRECTORY_SEPARATOR."log",
+        "file"      =>  "worklog.log",
+        "fmt"       =>  "time [type] msg code:in line",
+        "max_size"  =>  3  //日志单文件最大容量，超过后自动新建日志文件，大小单位兆M
     ),
 
     "task"  =>  array(
