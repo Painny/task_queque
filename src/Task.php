@@ -15,12 +15,14 @@ class Task{
     private $type;
     private $data;
     private $redis;
+    private $log;
 
     public function __construct($redis,$data)
     {
         $this->type=$data["type"];
         $this->redis=$redis;
         $this->data=json_decode($data["data"],true);
+        $this->log=new Log();
     }
 
     public function execute()
@@ -55,16 +57,15 @@ class Task{
         $this->redis->del($key);
 
         if(!$allCode){
-            //todo 记录日志
-            echo "没有授权码数据";
+            $this->log->error("没有授权码数据");
             exit();
         }
         $zip=new \ZipArchive();
         $zipfile=time().rand(0,9).".zip";
 
-        if(!$zip->open($zipfile, \ZipArchive::CREATE)){
-            //todo 记录日志
-            echo "zip打开文件出错";
+        $zipRes=$zip->open($zipfile, \ZipArchive::CREATE);
+        if(!$zipRes){
+            $this->log->error("zip打开文件错误:".$zipRes);
             exit();
         }
 
@@ -112,8 +113,7 @@ class Task{
 
         $res=$oss->uploadFile(config("oss","bucket"),$ossFileName,$zipfile);
         if(!isset($res["info"]["url"])){
-            //todo 记录日志
-            echo "上传oss出错";
+            $this->log->error("上传oss出错");
             exit();
         }
 
@@ -168,8 +168,7 @@ class Task{
         }
 
         if(!$mail->send()){
-            //todo 记录日志
-            echo "邮件发送失败:".$mail->ErrorInfo;
+            $this->log->info("发送邮件失败:".$mail->ErrorInfo);
         }
     }
 
