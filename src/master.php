@@ -48,6 +48,9 @@ class Master{
             $taskData=$this->checkTask();
 
             if($taskData){
+                //检查是否达到最大进程数
+                $this->checkChild();
+                //新开子进程执行任务
                 $worker=new Worker($this->name."_worker",$taskData);
                 $this->child_pid[]=$worker->pid;
             }
