@@ -47,6 +47,10 @@ class Master{
                 $worker=new Worker($this->name."_worker",$taskData);
                 $this->child_pid[]=$worker->pid;
             }
+
+            //检查是否有子进程退出
+            $this->waitChild();
+
             sleep($this->task_check_time);
         }
 
@@ -125,12 +129,29 @@ class Master{
          *      "email":"xxx@xxx.com"                       要发送的邮箱地址
          *      "file":"xxx.zip"                             将要生成文件的名字
          *  }
-         *
-         *
-         *
          */
 
     }
+
+    //监听处理僵尸子进程
+    private function waitChild()
+    {
+        $status=0;
+        $pid=pcntl_wait($status,WNOHANG);
+
+        if($pid <= 0){
+            return;
+        }
+
+        //从子进程数组中移除
+        $childArr=array_flip($this->child_pid);
+        unset($childArr[$pid]);
+        $this->child_pid=array_keys($childArr);
+        //更新子进程数量
+        $this->child_num=count($this->child_pid);
+
+    }
+
 
 
 
