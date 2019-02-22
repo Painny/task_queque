@@ -359,13 +359,13 @@ class Master{
     private function status()
     {
         if(!$this->isRunning()){
-            return "system is stoped";
+            return "system is stoped\n";
         }
 
         //守护进程pid
         $pid=$this->getPid();
 
-        $info="main process is running,the pid file is {$this->pidFile},pid is {$pid},now has {$this->child_num} child worker process is dealing with task";
+        $info="main process is running,the pid file is {$this->pidFile},pid is {$pid},now has {$this->child_num} child worker process is dealing with task\n";
         return $info;
     }
 
