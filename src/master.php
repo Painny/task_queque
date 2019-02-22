@@ -210,7 +210,7 @@ class Master{
 
         //判断是否有命令
         if($argc <=1){
-            return;
+            exit($this->commandTips);
         }
 
         //是否合法命令
@@ -221,7 +221,19 @@ class Master{
 
         switch ($argv[1]){
             case "start":
+                $deamonize=false;
 
+                if(isset($argv[2]) && $argv[2] == "-d"){
+                    //判断是否已经在以守护进程模式运行
+                    if(file_exists($this->pidFile)){
+                        $this->log->info("the system is already run in deamonize");
+                        exit("the system is already run in deamonize,pid file is ".$this->pidFile);
+                    }
+                    $deamonize=true;
+                }
+
+                $this->run($deamonize);
+                break;
         }
 
     }
