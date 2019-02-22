@@ -47,7 +47,7 @@ class Master{
                          "  start:start the main process to work,add -d flag in daemonize mode run\n".
                          "  stop:stop all the workers processes and then stop main process\n".
                          "  restart:stop all old processes and then start new main processes to work\n".
-                         "  status:return the system status\n".
+                         "  status:return the system status info\n".
                          "  testTask:add 3 test task data into system then send the result to the email,use -e flag appoint email\n".
                          "  help:get the help info\n";
 
@@ -247,6 +247,9 @@ class Master{
 
                 $this->addTask($argv[3]);
                 exit("you add 3 task data into the system,please wait for checking your email to debug");
+            case "status":
+                $status=$this->status();
+                exit($status);
         }
 
     }
@@ -350,6 +353,20 @@ class Master{
             return true;
         }
         return false;
+    }
+
+    //运行状态信息
+    private function status()
+    {
+        if(!$this->isRunning()){
+            return "system is stoped";
+        }
+
+        //守护进程pid
+        $pid=$this->getPid();
+
+        $info="main process is running,the pid file is {$this->pidFile},pid is {$pid},now has {$this->child_num} child worker process is dealing with task";
+        return $info;
     }
 
 }
