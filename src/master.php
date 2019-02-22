@@ -44,7 +44,7 @@ class Master{
     //命令提示信息
     private $commandTips="Usage: php yourfile <command> \n".
                          "Commands:\n".
-                         "  start:start the main process to work\n".
+                         "  start:start the main process to work,add -d flag in daemonize mode run\n".
                          "  stop:stop all the workers processes and then stop main process\n".
                          "  restart:stop all old processes and then start new main processes to work\n".
                          "  status:return the system status\n".
@@ -66,6 +66,8 @@ class Master{
         $this->checkRunEnv();
         //设置进程名
         cli_set_process_title($this->name." main process.pid file is {$this->pidFile}");
+        //以守护进程运行
+        $this->daemonize();
         //连接redis
         $this->connectRedis();
         //开始任务检测
