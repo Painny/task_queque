@@ -38,6 +38,9 @@ class Master{
         "help"
     ];
 
+    //守护进程pid文件
+    private $pidFile="/run/task_queque.pid";
+
     //命令提示信息
     private $commandTips="Usage: php yourfile <command> \n".
                          "Commands:\n".
@@ -49,7 +52,7 @@ class Master{
                          "  help:get the help info\n";
 
 
-    public function __construct($name,$max_child_num=3,$task_check_time=10)
+    public function __construct($name="task_queque",$max_child_num=3,$task_check_time=10)
     {
         $this->name=$name;
         $this->max_child_num=$max_child_num;
@@ -62,7 +65,7 @@ class Master{
         //检查运行环境
         $this->checkRunEnv();
         //设置进程名
-        cli_set_process_title($this->name);
+        cli_set_process_title($this->name." main process.pid file is {$this->pidFile}");
         //连接redis
         $this->connectRedis();
         //开始任务检测
@@ -94,6 +97,7 @@ class Master{
             $this->log->info("当前达到最大子进程数：".$this->child_num);
             //等待重试
             sleep(2);
+            $this->waitChild();
         }
         return;
     }
@@ -223,6 +227,49 @@ class Master{
             exit("error:please install posix php module");
         }
         return;
+    }
+
+    //以守护进程方式运行
+    private function daemonize()
+    {
+        $pid=pcntl_fork();
+        if($pid == -1){
+            $this->log->error("fork fail");
+            exit("can not fork process");
+        }else if($pid != 0){
+            //父进程退出
+            exit(0);
+        }
+
+        //在子进程再次fork，保证守护进程完全脱离终端控制
+        $pid=pcntl_fork();
+        if($pid == -1){
+            $this->log->error("fork fail");
+            exit("can not fork process");
+        }else if($pid != 0){
+            //父进程退出
+            exit(0);
+        }
+
+        $this->resetProcess();
+    }
+
+    //重置进程资源(会话、标准输入输出等)
+    private function resetProcess()
+    {
+        //重置掩码
+        umask(0);
+
+        //创建为新的会话组长
+        if(posix_setsid() == -1){
+            $this->log->error("posix_setsid fail");
+            exit("can not make the current process a session leader");
+        }
+
+        //关闭继承的文件资源
+        fclose(STDERR);
+        fclose(STDOUT);
+        fclose(STDIN);
     }
 
 
