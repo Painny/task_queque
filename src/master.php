@@ -25,12 +25,16 @@ class Master{
     //redis连接实例
     private $redis;
 
+    //log日志实例
+    private $log;
+
     public function __construct($name,$max_child_num=3,$task_check_time=10)
     {
         $this->name=$name;
         $this->max_child_num=$max_child_num;
 
         $this->task_check_time=$task_check_time;
+        $this->log=new Log();
     }
 
     public function run(){
@@ -63,6 +67,7 @@ class Master{
         while($this->child_num >= $this->max_child_num){
             sleep(2);
         }
+        return;
     }
 
     //模拟丢任务
