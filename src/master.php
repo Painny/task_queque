@@ -275,7 +275,7 @@ class Master{
         fclose(STDIN);
     }
 
-    //保存主进程id
+    //保存守护进程pid
     private function savePid()
     {
         if(!file_put_contents($this->pidFile,posix_getpid())){
@@ -286,5 +286,14 @@ class Master{
         chmod($this->pidFile,0644);
     }
 
+    //获取守护进程pid
+    private function getPid()
+    {
+        if(!file_exists($this->pidFile)){
+            $this->log->error("pid file is not exists");
+            exit("pid file is not exists");
+        }
+        return intval(file_get_contents($this->pidFile));
+    }
 
 }
