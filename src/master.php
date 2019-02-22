@@ -59,6 +59,8 @@ class Master{
     }
 
     public function run(){
+        //检查运行环境
+        $this->checkRunEnv();
         //设置进程名
         cli_set_process_title($this->name);
         //连接redis
@@ -202,6 +204,26 @@ class Master{
 
     }
 
+    //检查运行环境
+    private function checkRunEnv()
+    {
+        if(getSystem() !== "Linux"){
+            exit("error:please run in Linux system");
+        }
+
+        if(isCli() === false){
+            exit("error:please run in cli mode");
+        }
+
+        if(!function_exists("pcntl_fork")){
+            exit("error:please install pcntl php module");
+        }
+
+        if(!function_exists("posix_getpid")){
+            exit("error:please install posix php module");
+        }
+        return;
+    }
 
 
 }
