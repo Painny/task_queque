@@ -56,6 +56,7 @@ class Master{
     {
         $this->name=$name;
         $this->max_child_num=$max_child_num;
+        $this->child_num=0;
 
         $this->task_check_time=$task_check_time;
         $this->log=new Log();
