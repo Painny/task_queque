@@ -28,6 +28,16 @@ class Master{
     //log日志实例
     private $log;
 
+    //可接受命令列表
+    private $command=[
+        "start",
+        "stop",
+        "restart",
+        "status",
+        "testTask",
+        "help"
+    ];
+
     public function __construct($name,$max_child_num=3,$task_check_time=10)
     {
         $this->name=$name;
@@ -38,7 +48,6 @@ class Master{
     }
 
     public function run(){
-        pcntl_signal(SIGCHLD,SIG_IGN);
         //设置进程名
         cli_set_process_title($this->name);
         //连接redis
@@ -163,6 +172,24 @@ class Master{
 
     }
 
+    //接收命令
+    private function parseCommand()
+    {
+        global $argc;
+        global $argv;
+
+        //判断是否有命令
+        if($argc <=1){
+            return;
+        }
+
+        //是否合法命令
+        if(!in_array($argv[1],$this->command)){
+            $this->log->error("错误的命令：".$argv[1]);
+            exit();
+        }
+
+    }
 
 
 
