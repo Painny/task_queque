@@ -64,15 +64,21 @@ class Master{
         $this->parseCommand();
     }
 
-    public function run(){
+    private function run($daemonize=false){
         //检查运行环境
         $this->checkRunEnv();
+
         //设置进程名
         cli_set_process_title($this->name." main process.pid file is {$this->pidFile}");
-        //以守护进程运行
-        $this->daemonize();
+
+        if($daemonize){
+            //以守护进程运行
+            $this->daemonize();
+        }
+
         //连接redis
         $this->connectRedis();
+
         //开始任务检测
         while (true){
             $taskData=$this->checkTask();
@@ -131,6 +137,7 @@ class Master{
             config("redis","host"),
             config("redis","port")
         );
+
         $redis->auth(config("redis","passwd"));
         $redis->select(config("redis","db"));
         $this->redis=$redis;
@@ -189,6 +196,7 @@ class Master{
         $childArr=array_flip($this->child_pid);
         unset($childArr[$pid]);
         $this->child_pid=array_keys($childArr);
+
         //更新子进程数量
         $this->child_num=count($this->child_pid);
 
