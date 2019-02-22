@@ -48,7 +48,7 @@ class Master{
                          "  stop:stop all the workers processes and then stop main process\n".
                          "  restart:stop all old processes and then start new main processes to work\n".
                          "  status:return the system status\n".
-                         "  testTask:add the test task data to debug\n".
+                         "  testTask:add 3 test task data into system then send the result to the email,use -e flag appoint email\n".
                          "  help:get the help info\n";
 
 
@@ -114,14 +114,14 @@ class Master{
     }
 
     //模拟丢任务
-    private function addTask()
+    private function addTask($email)
     {
-        for($i=0;$i<2;$i++){
+        for($i=1;$i<=3;$i++){
             $this->redis->lPush(config("task","list"),"make_pay_code");
             $data=array(
                 "flag"          =>  $i,
                 "code_list_key" =>  "pay_code_list_{$i}",
-                "email"         =>  "pengyu@cnhsqk.com",
+                "email"         =>  $email,
                 "file"          =>  "test/pytest-{$i}.zip"
             );
             $this->redis->lPush("make_pay_code",json_encode($data));
@@ -225,7 +225,7 @@ class Master{
 
                 if(isset($argv[2]) && $argv[2] == "-d"){
                     //判断是否已经在以守护进程模式运行
-                    if(file_exists($this->pidFile)){
+                    if($this->isRunning()){
                         $this->log->info("the system is already run in deamonize");
                         exit("the system is already run in deamonize,pid file is ".$this->pidFile);
                     }
@@ -237,6 +237,14 @@ class Master{
             case "help":
                 exit($this->commandTips);
             case "testTask":
+                $email="";
+
+                if(!isset($argv[2]) || $argv[2] != "-e"){
+                    exit("please use -e flag to appoint a email for result send to");
+                }
+
+                $this->addTask($email);
+                exit("you add 3 task data into the system,please wait for checking your email to debug");
         }
 
     }
