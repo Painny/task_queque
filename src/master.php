@@ -66,8 +66,11 @@ class Master{
     //检测子进程数量
     private function checkChild()
     {
-        //达到最大子进程数量，等待
+        //达到最大子进程数量
         while($this->child_num >= $this->max_child_num){
+            //记录日志
+            $this->log->info("当前达到最大子进程数：".$this->child_num);
+            //等待重试
             sleep(2);
         }
         return;
