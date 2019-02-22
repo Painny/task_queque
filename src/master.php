@@ -59,6 +59,9 @@ class Master{
 
         $this->task_check_time=$task_check_time;
         $this->log=new Log();
+
+        //开始解析执行命令
+        $this->parseCommand();
     }
 
     public function run(){
@@ -206,6 +209,11 @@ class Master{
         if(!in_array($argv[1],$this->command)){
             $this->log->error("错误的命令：".$argv[1]);
             exit($this->commandTips);
+        }
+
+        switch ($argv[1]){
+            case "start":
+
         }
 
     }
