@@ -38,6 +38,17 @@ class Master{
         "help"
     ];
 
+    //命令提示信息
+    private $commandTips="Usage: php yourfile <command> \n".
+                         "Commands:\n".
+                         "  start:start the main process to work\n".
+                         "  stop:stop all the workers processes and then stop main process\n".
+                         "  restart:stop all old processes and then start new main processes to work\n".
+                         "  status:return the system status\n".
+                         "  testTask:add the test task data to debug\n".
+                         "  help:get the help info\n";
+
+
     public function __construct($name,$max_child_num=3,$task_check_time=10)
     {
         $this->name=$name;
@@ -186,7 +197,7 @@ class Master{
         //是否合法命令
         if(!in_array($argv[1],$this->command)){
             $this->log->error("错误的命令：".$argv[1]);
-            exit();
+            exit($this->commandTips);
         }
 
     }
