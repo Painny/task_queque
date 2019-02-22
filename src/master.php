@@ -236,7 +236,7 @@ class Master{
                 break;
             case "help":
                 exit($this->commandTips);
-                
+            case "testTask":
         }
 
     }
@@ -327,6 +327,19 @@ class Master{
             exit("pid file is not exists");
         }
         return intval(file_get_contents($this->pidFile));
+    }
+
+    //判断是否已经以守护进程模式在运行
+    private function isRunning()
+    {
+        if(file_exists($this->pidFile)){
+            if(!intval(file_get_contents($this->pidFile))){
+                unlink($this->pidFile);
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
 }
