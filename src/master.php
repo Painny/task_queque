@@ -252,6 +252,9 @@ class Master{
         }
 
         $this->resetProcess();
+
+        //保存进程id
+        $this->savePid();
     }
 
     //重置进程资源(会话、掩码等)
@@ -270,6 +273,17 @@ class Master{
         fclose(STDERR);
         fclose(STDOUT);
         fclose(STDIN);
+    }
+
+    //保存主进程id
+    private function savePid()
+    {
+        if(!file_put_contents($this->pidFile,posix_getpid())){
+            $this->log->error("save pid file fail");
+            exit("save pid file fail");
+        }
+        //更改文件权限
+        chmod($this->pidFile,0644);
     }
 
 
