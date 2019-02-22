@@ -234,6 +234,9 @@ class Master{
 
                 $this->run($deamonize);
                 break;
+            case "help":
+                exit($this->commandTips);
+                
         }
 
     }
