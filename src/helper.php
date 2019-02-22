@@ -6,6 +6,7 @@
  * Time: 18:06
  */
 
+//获取配置参数
 function config($block,$key)
 {
     global $CFG;
@@ -15,6 +16,7 @@ function config($block,$key)
     return $CFG[$block][$key];
 }
 
+//日志记录
 function logging($type,Exception $exception)
 {
     $pattern=array("/\[time\]/","/\[type\]/","/\[code\]/","/\[line\]/","/\[msg\]/");
@@ -27,4 +29,16 @@ function logging($type,Exception $exception)
     $f=fopen($logFile,"a");
     fwrite($f,$logContent);
     fclose($f);
+}
+
+//获取当前系统
+function getSystem()
+{
+    return DIRECTORY_SEPARATOR === "\\"?"Windows":"Linux";
+}
+
+//当前是否时命令行模式(cli)
+function isCli()
+{
+    return php_sapi_name() === "cli"?true:false;
 }
