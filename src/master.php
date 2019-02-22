@@ -237,13 +237,15 @@ class Master{
             case "help":
                 exit($this->commandTips);
             case "testTask":
-                $email="";
-
                 if(!isset($argv[2]) || $argv[2] != "-e"){
                     exit("please use -e flag to appoint a email for result send to");
                 }
 
-                $this->addTask($email);
+                if(!isset($argv[3])){
+                    exit("please add the correct email follow the -e flag");
+                }
+
+                $this->addTask($argv[3]);
                 exit("you add 3 task data into the system,please wait for checking your email to debug");
         }
 
