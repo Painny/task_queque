@@ -254,7 +254,7 @@ class Master{
         $this->resetProcess();
     }
 
-    //重置进程资源(会话、标准输入输出等)
+    //重置进程资源(会话、掩码等)
     private function resetProcess()
     {
         //重置掩码
