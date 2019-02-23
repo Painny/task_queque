@@ -86,6 +86,8 @@ class Master{
         //开始任务检测
         $this->checkTask();
 
+        //开始监听处理信号等
+        $this->monitor();
 
     }
 
@@ -138,7 +140,7 @@ class Master{
     {
         //定时发送alarm信号，出发任务检测
         pcntl_alarm($this->task_check_time);
-
+        echo "checkTask\n";
         //检测redis是否断线
         if($this->redis->ping()!=="+PONG"){
             $this->connectRedis();
@@ -186,7 +188,7 @@ class Master{
     private function waitChild()
     {
         $status=0;
-        $pid=pcntl_wait($status,WNOHANG);
+        $pid=pcntl_wait($status,WUNTRACED);
 
         if($pid <= 0){
             return;
@@ -403,6 +405,21 @@ class Master{
     private function stopAll()
     {
         $this->log->info("get SIGTERM signal");
+    }
+
+    //监听处理信号、子进程等(主循环)
+    private function monitor()
+    {
+        while (true){
+            //检测是否有信号可捕捉处理
+            pcntl_signal_dispatch();
+
+            //监听等待子进程退出
+            $this->waitChild();
+
+            //再次检测
+            pcntl_signal_dispatch();
+        }
     }
 
 }
