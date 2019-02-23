@@ -444,8 +444,7 @@ class Master{
         try{
             global $CFG;
             $old=config("log","max_size");
-            $CFG=null;
-            $CFG=require_once "./config.php";
+            $CFG=require_once __DIR__."/config.php";
             $new=config("log","max_size");
             $this->log->info("reloadConfig: old max_size is {$old},new is {$new}");
         }catch (Error $error){
