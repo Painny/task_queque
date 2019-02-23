@@ -138,6 +138,7 @@ class Master{
     //检测任务
     private function checkTask()
     {
+        $this->log->info("check task\n");
         //定时发送alarm信号，出发任务检测
         pcntl_alarm($this->task_check_time);
 
