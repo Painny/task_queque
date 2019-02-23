@@ -377,7 +377,7 @@ class Master{
     {
         pcntl_signal(SIGTERM,array($this,"stopAll"));
         pcntl_signal(SIGUSR1,array($this,"restartAll"));
-        pcntl_signal(SIGPIPE, SIG_IGN, false);
+        pcntl_signal(SIGALRM,array($this,"checkTask"));
     }
 
     //发送停止所有进程信号
