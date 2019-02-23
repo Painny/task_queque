@@ -446,7 +446,10 @@ class Master{
     {
         $pid=pcntl_fork();
         if($pid == 0){
-            sleep(15);
+            for($i=0;$i<15;$i++){
+                sleep(1);
+                $this->log->info("child {$i} sleep");
+            }
             exit(0);
         }else{
             while (true){
