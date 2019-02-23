@@ -140,7 +140,7 @@ class Master{
     {
         //定时发送alarm信号，出发任务检测
         pcntl_alarm($this->task_check_time);
-        echo "checkTask\n";
+
         //检测redis是否断线
         if($this->redis->ping()!=="+PONG"){
             $this->connectRedis();
