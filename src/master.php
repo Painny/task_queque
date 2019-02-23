@@ -395,12 +395,14 @@ class Master{
         //向守护进程发送停止信号
         posix_kill($pid,SIGTERM);
 
-        sleep(2);
-
-        if($this->isRunning()){
-            exit("stop system is fail");
+        //最多等待10秒，未停止则失败
+        for($i=0;$i<10;$i++){
+            if(!$this->isRunning()){
+                exit("stop success");
+            }
+            sleep(1);
         }
-        exit("stop success");
+        exit("stop system is fail");
     }
 
     //执行停止所有进程信号
@@ -442,15 +444,21 @@ class Master{
     //监听处理信号、子进程等(主循环)
     private function monitor()
     {
-        while (true){
-            //检测是否有信号可捕捉处理
-            pcntl_signal_dispatch();
+        $pid=pcntl_fork();
+        if($pid == 0){
+            sleep(15);
+            exit(0);
+        }else{
+            while (true){
+                //检测是否有信号可捕捉处理
+                pcntl_signal_dispatch();
 
-            //监听等待子进程退出
-            $this->waitChild();
+                //监听等待子进程退出
+                $this->waitChild();
 
-            //再次检测
-            pcntl_signal_dispatch();
+                //再次检测
+                pcntl_signal_dispatch();
+            }
         }
 
     }
