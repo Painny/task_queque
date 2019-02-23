@@ -400,7 +400,7 @@ class Master{
         posix_kill($pid,SIGTERM);
 
         //最多等待10秒，未停止则失败
-        for($i=0;$i<10;$i++){
+        for($i=0;$i<20;$i++){
             if(!$this->isRunning()){
                 exit("stop success\n");
             }
