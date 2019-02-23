@@ -444,7 +444,10 @@ class Master{
         try{
             global $CFG;
             $old=config("log","max_size");
+            $file=__DIR__."/config.php";
+            $this->log->info($file);
             $CFG=require_once __DIR__."/config.php";
+            $this->log->info(json_encode($CFG));
             $new=config("log","max_size");
             $this->log->info("reloadConfig: old max_size is {$old},new is {$new}");
         }catch (Error $error){
