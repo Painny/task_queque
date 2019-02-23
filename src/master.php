@@ -189,7 +189,7 @@ class Master{
     {
         $status=0;
         $pid=pcntl_wait($status,WUNTRACED);
-        echo "in waitChild:pid is {$pid}\n";
+        echo "in waitChild:pid is {$pid}\n";exit(0);
         if($pid <= 0){
             return;
         }
