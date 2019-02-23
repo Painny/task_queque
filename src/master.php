@@ -398,6 +398,7 @@ class Master{
         $pid=$this->getPid();
         //向守护进程发送停止信号
         posix_kill($pid,SIGTERM);
+        $this->log->info("send stop signal");
 
         //最多等待10秒，未停止则失败
         for($i=0;$i<20;$i++){
