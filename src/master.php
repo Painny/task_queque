@@ -138,7 +138,7 @@ class Master{
     //检测任务
     private function checkTask()
     {
-        $this->log->info("check task\n");
+        $this->log->info("check task");
         //定时发送alarm信号，出发任务检测
         pcntl_alarm($this->task_check_time);
 
@@ -188,6 +188,7 @@ class Master{
     //监听处理僵尸子进程
     private function waitChild()
     {
+        $this->log->info("in waitChild");
         $status=0;
         $pid=pcntl_wait($status,WUNTRACED);
 
