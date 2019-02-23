@@ -424,6 +424,7 @@ class Master{
 
         //对于主进程，停止任务检测，等待所有子进程退出后在退出
         while($this->child_num > 0){
+            $this->log->info("wait all child exit,now has {$this->child_num} child");
             sleep(1);
         }
         //删除pid文件
