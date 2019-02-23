@@ -441,19 +441,14 @@ class Master{
     //执行重载信号
     private function reloadConfig()
     {
-        try{
-            global $CFG;
-            $old=config("log","max_size");
-            $file=__DIR__."/config.php";
-            $this->log->info($file);
-            $CFG=require_once __DIR__."/config.php";
-            $this->log->info(json_encode($CFG));
-            $new=config("log","max_size");
-            $this->log->info("reloadConfig: old max_size is {$old},new is {$new}");
-        }catch (Error $error){
-            $this->log->info($error);
-        }
+        global $CFG;
 
+        $old=config("log","max_size");
+        $file=__DIR__."/config.php";
+        $CFG=require $file;
+        
+        $new=config("log","max_size");
+        $this->log->info("reloadConfig: old max_size is {$old},new is {$new}");
     }
 
     //监听处理信号、子进程等(主循环)
