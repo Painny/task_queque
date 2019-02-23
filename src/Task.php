@@ -58,7 +58,7 @@ class Task{
 
         if(!$allCode){
             $this->log->error("没有授权码数据");
-            exit();
+            return;
         }
         $zip=new \ZipArchive();
         $zipfile=time().rand(0,9).".zip";
@@ -66,7 +66,7 @@ class Task{
         $zipRes=$zip->open($zipfile, \ZipArchive::CREATE);
         if(!$zipRes){
             $this->log->error("zip打开文件错误:".$zipRes);
-            exit();
+            return;
         }
 
         //添加文本文件
@@ -114,7 +114,7 @@ class Task{
         $res=$oss->uploadFile(config("oss","bucket"),$ossFileName,$zipfile);
         if(!isset($res["info"]["url"])){
             $this->log->error("上传oss出错");
-            exit();
+            return;
         }
 
         $attchments=$picArr;
