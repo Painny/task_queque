@@ -32,7 +32,7 @@ class Master{
     private $command=[
         "start",
         "stop",
-        "restart",
+        "reload",
         "status",
         "testTask",
         "help"
