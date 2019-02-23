@@ -138,7 +138,6 @@ class Master{
     //检测任务
     private function checkTask()
     {
-        $this->log->info("check task");
         //定时发送alarm信号，出发任务检测
         pcntl_alarm($this->task_check_time);
 
@@ -188,7 +187,6 @@ class Master{
     //监听处理僵尸子进程
     private function waitChild()
     {
-        $this->log->info("in waitChild");
         $status=0;
         $pid=pcntl_wait($status,WUNTRACED);
 
@@ -205,7 +203,6 @@ class Master{
 
         //更新子进程数量
         $this->child_num=count($this->child_pid);
-        $this->log->info("get child exit");
     }
 
     //接收命令
@@ -398,7 +395,6 @@ class Master{
         $pid=$this->getPid();
         //向守护进程发送停止信号
         posix_kill($pid,SIGTERM);
-        $this->log->info("send stop signal");
 
         //最多等待10秒，未停止则失败
         for($i=0;$i<20;$i++){
@@ -413,7 +409,6 @@ class Master{
     //执行停止所有进程信号
     private function stopAll()
     {
-        $this->log->info("in stopAll");
         $masterPid=$this->getPid();
         $currentPid=posix_getpid();
 
@@ -425,8 +420,6 @@ class Master{
         //对于主进程，停止任务检测，等待所有子进程退出后在退出
         while($this->child_num > 0){
             $this->waitChild();
-            $this->log->info("wait all child exit,now has {$this->child_num} child");
-            sleep(1);
         }
         //删除pid文件
         unlink($this->pidFile);
@@ -452,24 +445,15 @@ class Master{
     //监听处理信号、子进程等(主循环)
     private function monitor()
     {
-        $pid=pcntl_fork();
-        if($pid == 0){
-            sleep(15);
-            $this->log->info("child exit");
-            exit(0);
-        }else{
-            $this->child_num=1;
-            $this->child_pid[]=$pid;
-            while (true){
-                //检测是否有信号可捕捉处理
-                pcntl_signal_dispatch();
+        while (true){
+            //检测是否有信号可捕捉处理
+            pcntl_signal_dispatch();
 
-                //监听等待子进程退出
-                $this->waitChild();
+            //监听等待子进程退出
+            $this->waitChild();
 
-                //再次检测
-                pcntl_signal_dispatch();
-            }
+            //再次检测
+            pcntl_signal_dispatch();
         }
 
     }
