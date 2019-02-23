@@ -398,7 +398,7 @@ class Master{
         //最多等待10秒，未停止则失败
         for($i=0;$i<10;$i++){
             if(!$this->isRunning()){
-                exit("stop success");
+                exit("stop success ".date("Y-m-d H:i:s"));
             }
             sleep(1);
         }
