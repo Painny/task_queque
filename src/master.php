@@ -191,11 +191,11 @@ class Master{
         $pid=pcntl_wait($status,WUNTRACED);
 
         if($pid <= 0){
-            echo "wait error:pid is {$pid},status is {$status}\n";exit(0);
+            //没有子进程，等待2秒,避免wait直接返回主循环过快占用cpu资源
+            sleep(2);
             return;
         }
 
-        $this->log->info("get child exit");
         //从子进程数组中移除
         $childArr=array_flip($this->child_pid);
         unset($childArr[$pid]);
@@ -203,7 +203,7 @@ class Master{
 
         //更新子进程数量
         $this->child_num=count($this->child_pid);
-        echo "get child exit:pid is {$pid}\n";
+        $this->log->info("get child exit");
     }
 
     //接收命令
@@ -448,8 +448,7 @@ class Master{
     {
         $pid=pcntl_fork();
         if($pid == 0){
-            sleep(6);
-            echo "child exit\n";
+            sleep(8);
             exit(0);
         }else{
             $this->child_num=1;
