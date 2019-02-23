@@ -407,6 +407,18 @@ class Master{
         $this->log->info("get SIGTERM signal");
     }
 
+    //发送重启信号
+    private function restart()
+    {
+
+    }
+
+    //执行重启信号
+    private function restartAll()
+    {
+
+    }
+
     //监听处理信号、子进程等(主循环)
     private function monitor()
     {
