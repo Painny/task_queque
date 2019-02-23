@@ -413,6 +413,7 @@ class Master{
     //执行停止所有进程信号
     private function stopAll()
     {
+        $this->log->info("in stopAll");
         $masterPid=$this->getPid();
         $currentPid=posix_getpid();
 
