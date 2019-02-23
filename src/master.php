@@ -77,6 +77,9 @@ class Master{
             $this->daemonize();
         }
 
+        //安装信心处理函数
+        $this->installSignal();
+
         //连接redis
         $this->connectRedis();
 
@@ -371,6 +374,14 @@ class Master{
 
         $info="main process is running,the pid file is {$this->pidFile},pid is {$pid}\n";
         return $info;
+    }
+
+    //安装信号
+    private function installSignal()
+    {
+        pcntl_signal(SIGTERM,array($this,"stopAll"));
+        pcntl_signal(SIGUSR1,array($this,"restartAll"));
+        pcntl_signal(SIGPIPE, SIG_IGN, false);
     }
 
     //停止所有进程
