@@ -108,6 +108,7 @@ class Master{
     //模拟丢任务
     private function addTask($email)
     {
+        $this->connectRedis();
         for($i=1;$i<=3;$i++){
             $this->redis->lPush(config("task","list"),"make_pay_code");
             $data=array(
@@ -249,6 +250,7 @@ class Master{
                 }
 
                 $this->addTask($argv[3]);
+                $this->redis->close();
                 exit("you add 3 task data into the system,please wait for checking your email to debug");
             case "status":
                 $status=$this->status();
