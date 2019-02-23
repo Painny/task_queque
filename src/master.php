@@ -443,12 +443,8 @@ class Master{
     {
         global $CFG;
 
-        $old=config("log","max_size");
         $file=__DIR__."/config.php";
         $CFG=require $file;
-        
-        $new=config("log","max_size");
-        $this->log->info("reloadConfig: old max_size is {$old},new is {$new}");
     }
 
     //监听处理信号、子进程等(主循环)
