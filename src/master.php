@@ -46,7 +46,7 @@ class Master{
                          "Commands:\n".
                          "  start:start the main process to work,add -d flag in daemonize mode run\n".
                          "  stop:stop all the workers processes and then stop main process\n".
-                         "  restart:stop all old processes and then start new main processes to work\n".
+                         "  reload:reload the config\n".
                          "  status:return the system status info\n".
                          "  testTask:add 3 test task data into system then send the result to the email,use -e flag appoint email\n".
                          "  help:get the help info\n";
@@ -258,8 +258,8 @@ class Master{
             case "stop":
                 $this->stop();
                 exit(0);
-            case "restart":
-                $this->restart();
+            case "reload":
+                $this->reload();
         }
 
     }
@@ -383,7 +383,7 @@ class Master{
     private function installSignal()
     {
         pcntl_signal(SIGTERM,array($this,"stopAll"));
-        pcntl_signal(SIGUSR1,array($this,"restartAll"));
+        pcntl_signal(SIGUSR1,array($this,"reloadConfig"));
         pcntl_signal(SIGALRM,array($this,"checkTask"));
     }
 
@@ -428,20 +428,25 @@ class Master{
         exit(0);
     }
 
-    //发送重启信号
-    private function restart()
+    //发送重载信号
+    private function reload()
     {
         if(!$this->isRunning()){
-            $this->run(true);
-        }else{
-            //todo
+            exit("system is not running");
         }
+        $pid=$this->getPid();
+        posix_kill($pid,SIGUSR1);
     }
 
-    //执行重启信号
-    private function restartAll()
+    //执行重载信号
+    private function reloadConfig()
     {
-        //todo
+        global $CFG;
+        $old=config("log","max_size");
+        $CFG=null;
+        $CFG=require_once "./src/config.php";
+        $new=config("log","max_size");
+        $this->log->info("reloadConfig: old max_size is {$old},new is {$new}");
     }
 
     //监听处理信号、子进程等(主循环)
