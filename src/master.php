@@ -193,8 +193,8 @@ class Master{
         $pid=pcntl_wait($status,WUNTRACED);
 
         if($pid <= 0){
-            //没有子进程，等待2秒,避免wait直接返回主循环过快占用cpu资源
-            sleep(2);
+            //没有子进程，等待1秒,避免wait直接返回主循环过快占用cpu资源
+            sleep(1);
             return;
         }
 
