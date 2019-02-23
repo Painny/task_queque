@@ -193,7 +193,7 @@ class Master{
         if($pid <= 0){
             return;
         }
-        echo "child exit";return;
+        
         //从子进程数组中移除
         $childArr=array_flip($this->child_pid);
         unset($childArr[$pid]);
@@ -422,21 +422,15 @@ class Master{
     //监听处理信号、子进程等(主循环)
     private function monitor()
     {
-        $pid=pcntl_fork();
-        if($pid == 0){
-            sleep(6);
-            exit(0);
-        }else if($pid >0){
-            while (true){
-                //检测是否有信号可捕捉处理
-                pcntl_signal_dispatch();
+        while (true){
+            //检测是否有信号可捕捉处理
+            pcntl_signal_dispatch();
 
-                //监听等待子进程退出
-                $this->waitChild();
+            //监听等待子进程退出
+            $this->waitChild();
 
-                //再次检测
-                pcntl_signal_dispatch();
-            }
+            //再次检测
+            pcntl_signal_dispatch();
         }
 
     }
