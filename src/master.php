@@ -251,6 +251,9 @@ class Master{
             case "status":
                 $status=$this->status();
                 exit($status);
+            case "stop":
+                $this->stop();
+                exit(0);
         }
 
     }
@@ -366,8 +369,27 @@ class Master{
         //守护进程pid
         $pid=$this->getPid();
 
-        $info="main process is running,the pid file is {$this->pidFile},pid is {$pid},now has {$this->child_num} child worker process is dealing with task\n";
+        $info="main process is running,the pid file is {$this->pidFile},pid is {$pid}\n";
         return $info;
+    }
+
+    //停止所有进程
+    private function stop()
+    {
+        if(!$this->isRunning()){
+            exit("system is stoped");
+        }
+
+        $pid=$this->getPid();
+        //向守护进程发送停止信号
+        posix_kill($pid,SIGTERM);
+
+        sleep(2);
+
+        if($this->isRunning()){
+            exit("stop system is fail");
+        }
+        exit("stop success");
     }
 
 }
