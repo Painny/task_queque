@@ -84,22 +84,8 @@ class Master{
         $this->connectRedis();
 
         //开始任务检测
-        while (true){
-            $taskData=$this->checkTask();
+        $this->checkTask();
 
-            if($taskData){
-                //检查是否达到最大进程数
-                $this->checkChild();
-                //新开子进程执行任务
-                $worker=new Worker($this->name."_worker",$taskData);
-                $this->child_pid[]=$worker->pid;
-            }
-
-            //检查是否有子进程退出
-            $this->waitChild();
-
-            sleep($this->task_check_time);
-        }
 
     }
 
@@ -150,6 +136,9 @@ class Master{
     //检测任务
     private function checkTask()
     {
+        //定时发送alarm信号，出发任务检测
+        pcntl_alarm($this->task_check_time);
+
         //检测redis是否断线
         if($this->redis->ping()!=="+PONG"){
             $this->connectRedis();
@@ -159,31 +148,38 @@ class Master{
         $taskType=$this->redis->rPop(config("task","list"));
         //无任务
         if(!$taskType){
-            return null;
+            return;
         }
 
         //无效任务类型
         if(!in_array($taskType,config("task","type"))){
-            return null;
+            return;
         }
 
         //从该类型的任务列表中取除具体任务数据
         $taskData=$this->redis->rPop($taskType);
         if(!$taskData){
-            return null;
+            return;
         }
 
-        return array("type"=>$taskType,"data"=>$taskData);
         /*
          * 生成学生付款码任务数据：
          *  {
          *      "flag":0|1|2,                               生成文件包含内容，0二维码，1文本，2两者
          *      "code_list_key":"pay_code_list_xxx"         存付款码列表的redis key
          *      "email":"xxx@xxx.com"                       要发送的邮箱地址
-         *      "file":"xxx.zip"                             将要生成文件的名字
+         *      "file":"xxx.zip"                            将要生成文件的名字
          *  }
          */
+        $taskData=array("type"=>$taskType,"data"=>$taskData);
 
+        if($taskData){
+            //检查是否达到最大进程数
+            $this->checkChild();
+            //新开子进程执行任务
+            $worker=new Worker($this->name."_worker",$taskData);
+            $this->child_pid[]=$worker->pid;
+        }
     }
 
     //监听处理僵尸子进程
