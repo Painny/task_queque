@@ -444,15 +444,23 @@ class Master{
     //监听处理信号、子进程等(主循环)
     private function monitor()
     {
-        while (true){
-            //检测是否有信号可捕捉处理
-            pcntl_signal_dispatch();
+        $pid=pcntl_fork();
+        if($pid == 0){
+            sleep(15);
+            exit(0);
+        }else{
+            $this->child_num=1;
+            $this->child_pid[]=$pid;
+            while (true){
+                //检测是否有信号可捕捉处理
+                pcntl_signal_dispatch();
 
-            //监听等待子进程退出
-            $this->waitChild();
+                //监听等待子进程退出
+                $this->waitChild();
 
-            //再次检测
-            pcntl_signal_dispatch();
+                //再次检测
+                pcntl_signal_dispatch();
+            }
         }
 
     }
