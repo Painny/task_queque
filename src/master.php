@@ -193,7 +193,7 @@ class Master{
         if($pid <= 0){
             return;
         }
-        
+
         //从子进程数组中移除
         $childArr=array_flip($this->child_pid);
         unset($childArr[$pid]);
@@ -255,6 +255,8 @@ class Master{
             case "stop":
                 $this->stop();
                 exit(0);
+            case "restart":
+                $this->restart();
         }
 
     }
@@ -404,19 +406,37 @@ class Master{
     //执行停止所有进程信号
     private function stopAll()
     {
-        $this->log->info("get SIGTERM signal");
+        $masterPid=$this->getPid();
+        $currentPid=posix_getpid();
+
+        //对于子进程，不做任何处理，任务完成会自动退出
+        if($currentPid != $masterPid){
+            return;
+        }
+
+        //对于主进程，停止任务检测，等待所有子进程退出后在退出
+        while($this->child_num > 0){
+            sleep(1);
+        }
+        //删除pid文件
+        unlink($this->pidFile);
+        exit(0);
     }
 
     //发送重启信号
     private function restart()
     {
-
+        if(!$this->isRunning()){
+            $this->run(true);
+        }else{
+            //todo
+        }
     }
 
     //执行重启信号
     private function restartAll()
     {
-
+        //todo
     }
 
     //监听处理信号、子进程等(主循环)
