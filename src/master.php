@@ -384,7 +384,7 @@ class Master{
         pcntl_signal(SIGPIPE, SIG_IGN, false);
     }
 
-    //停止所有进程
+    //发送停止所有进程信号
     private function stop()
     {
         if(!$this->isRunning()){
@@ -401,6 +401,12 @@ class Master{
             exit("stop system is fail");
         }
         exit("stop success");
+    }
+
+    //执行停止所有进程信号
+    private function stopAll()
+    {
+        $this->log->info("get SIGTERM signal");
     }
 
 }
