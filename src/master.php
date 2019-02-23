@@ -189,7 +189,7 @@ class Master{
     {
         $status=0;
         $pid=pcntl_wait($status,WUNTRACED);
-
+        echo "in waitChild\n";
         if($pid <= 0){
             return;
         }
@@ -447,6 +447,7 @@ class Master{
         $pid=pcntl_fork();
         if($pid == 0){
             sleep(15);
+            echo "child exit\n";
             exit(0);
         }else{
             $this->child_num=1;
