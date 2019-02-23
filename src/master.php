@@ -388,7 +388,7 @@ class Master{
     private function stop()
     {
         if(!$this->isRunning()){
-            exit("system is stoped");
+            exit("system is stoped\n");
         }
 
         $pid=$this->getPid();
@@ -398,11 +398,11 @@ class Master{
         //最多等待10秒，未停止则失败
         for($i=0;$i<10;$i++){
             if(!$this->isRunning()){
-                exit("stop success ".date("Y-m-d H:i:s"));
+                exit("stop success ".date("Y-m-d H:i:s")."\n");
             }
             sleep(1);
         }
-        exit("stop system is fail");
+        exit("stop system is fail\n");
     }
 
     //执行停止所有进程信号
@@ -448,10 +448,13 @@ class Master{
         if($pid == 0){
             for($i=0;$i<15;$i++){
                 sleep(1);
-                $this->log->info("child {$i} sleep");
+                echo "child {$i} sleep\n";
             }
             exit(0);
         }else{
+            sleep(6);
+            $this->stop();
+            echo "send stop\n";
             while (true){
                 //检测是否有信号可捕捉处理
                 pcntl_signal_dispatch();
