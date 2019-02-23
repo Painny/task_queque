@@ -451,6 +451,7 @@ class Master{
         $pid=pcntl_fork();
         if($pid == 0){
             sleep(15);
+            $this->log->info("child exit");
             exit(0);
         }else{
             $this->child_num=1;
