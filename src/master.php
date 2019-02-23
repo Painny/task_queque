@@ -448,8 +448,8 @@ class Master{
             $CFG=require_once "./config.php";
             $new=config("log","max_size");
             $this->log->info("reloadConfig: old max_size is {$old},new is {$new}");
-        }catch (Exception $exception){
-            $this->log->info($exception);
+        }catch (Error $error){
+            $this->log->info($error);
         }
 
     }

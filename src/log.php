@@ -67,7 +67,7 @@ class Log{
         }
 
         $pattern=array("/time/","/type/","/code/","/line/","/msg/");
-        if($msg instanceof Exception){
+        if($msg instanceof Exception || $msg instanceof Error){
             $replacement=array(
                 date("Y/m/d H:i:s"),
                 $level,
