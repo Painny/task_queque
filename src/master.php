@@ -193,7 +193,7 @@ class Master{
         if($pid <= 0){
             return;
         }
-
+        $this->log->info("get child exit");
         //从子进程数组中移除
         $childArr=array_flip($this->child_pid);
         unset($childArr[$pid]);
