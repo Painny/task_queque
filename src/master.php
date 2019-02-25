@@ -16,6 +16,9 @@ class Master{
     //子进程pid数组
     private $child_pid;
 
+    //最小子进程数量
+    private $min_child_num;
+
     //最大子进程数量
     private $max_child_num;
 
