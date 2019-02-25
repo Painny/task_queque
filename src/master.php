@@ -77,7 +77,7 @@ class Master{
             $this->daemonize();
         }
 
-        //安装信心处理函数
+        //安装信号处理函数
         $this->installSignal();
 
         //连接redis
