@@ -60,7 +60,7 @@ class Worker{
     {
         $status=0;
         while (true){
-            echo "child listen:".$this->pid.PHPEOL;
+            echo "child listen:".$this->pid.PHP_EOL;
             pcntl_signal_dispatch();
             //堵塞等待信号
             pcntl_wait($status);
