@@ -363,7 +363,7 @@ class Master{
         posix_kill($pid,SIGTERM);
 
         //最多等待10秒，未停止则失败
-        for($i=0;$i<20;$i++){
+        for($i=0;$i<10;$i++){
             if(!$this->isRunning()){
                 exit("stop success\n");
             }
@@ -378,9 +378,9 @@ class Master{
         $masterPid=$this->getPid();
         $currentPid=posix_getpid();
 
-        //对于子进程，不做任何处理，任务完成会自动退出
+        //对于子进程，直接退出
         if($currentPid != $masterPid){
-            return;
+            exit();
         }
 
         //对于主进程，停止任务检测，等待所有子进程退出后在退出
