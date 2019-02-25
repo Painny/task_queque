@@ -95,7 +95,6 @@ class Worker{
     //获取、执行任务
     private function doTask()
     {
-        echo config("log","max_size").PHP_EOL;return;
         //检测redis是否断线
         if($this->redis->ping()!=="+PONG"){
             $this->connectRedis();
