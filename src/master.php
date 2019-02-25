@@ -71,7 +71,7 @@ class Master{
         $this->checkRunEnv();
 
         //设置进程名
-        cli_set_process_title($this->name." main process.pid file is {$this->pidFile}");
+        cli_set_process_title($this->name."_main process,pid file is {$this->pidFile}");
 
         if($daemonize){
             //以守护进程运行
