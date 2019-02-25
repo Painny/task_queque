@@ -375,15 +375,12 @@ class Master{
     //执行停止所有进程信号
     private function stopAll()
     {
-        $masterPid=$this->getPid();
-        $currentPid=posix_getpid();
-
-        //对于子进程，直接退出
-        if($currentPid != $masterPid){
-            exit();
+        //向子进程发送停止信号
+        foreach ($this->child_pid as $childPid){
+            posix_kill($childPid,SIGTERM);
         }
 
-        //对于主进程，停止任务检测，等待所有子进程退出后在退出
+        //等待所有子进程退出后在退出
         while(count($this->child_pid) > 0){
             $this->waitChild();
         }
