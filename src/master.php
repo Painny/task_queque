@@ -10,17 +10,11 @@ class Master{
     //主进程名
     private $name;
 
-    //当前子进程数量
+    //子进程数量
     private $child_num;
 
     //子进程pid数组
     private $child_pid;
-
-    //最小子进程数量
-    private $min_child_num;
-
-    //最大子进程数量
-    private $max_child_num;
 
     //任务检测间隔时间(秒)
     private $task_check_time;
@@ -55,11 +49,10 @@ class Master{
                          "  help:get the help info\n";
 
 
-    public function __construct($name="task_queque",$max_child_num=3,$task_check_time=10)
+    public function __construct($name="task_queque",$child_num=2,$task_check_time=10)
     {
         $this->name=$name;
-        $this->max_child_num=$max_child_num;
-        $this->child_num=0;
+        $this->child_num=$child_num;
 
         $this->task_check_time=$task_check_time;
         $this->log=new Log();
@@ -95,20 +88,6 @@ class Master{
         //开始监听处理信号等
         $this->monitor();
 
-    }
-
-    //检测子进程数量
-    private function checkChild()
-    {
-        //达到最大子进程数量
-        while($this->child_num >= $this->max_child_num){
-            //记录日志
-            $this->log->info("当前达到最大子进程数：".$this->child_num);
-            //等待重试
-            sleep(2);
-            $this->waitChild();
-        }
-        return;
     }
 
     //模拟丢任务
@@ -161,8 +140,10 @@ class Master{
         }
 
         //todo 在主进程不获取任务数据，有任务时通知空闲的子进程或者fork子进程完成获取任务数据并执行
+        //轮询选取一个子进程去执行任务
+        $this->chooseChildWork();
 
-        //------------------------------------
+        //--------------------------以下移到子进程中-----------------
 
         //从所有任务类型列表中获取可以执行的任务类型
         $taskType=$this->redis->rPop(config("task","list"));
@@ -193,13 +174,6 @@ class Master{
          */
         $taskData=array("type"=>$taskType,"data"=>$taskData);
 
-        if($taskData){
-            //检查是否达到最大进程数
-            $this->checkChild();
-            //新开子进程执行任务
-            $worker=new Worker($this->name."_worker",$taskData);
-            $this->child_pid[]=$worker->pid;
-        }
     }
 
     //监听处理僵尸子进程
@@ -437,7 +411,7 @@ class Master{
         }
 
         //对于主进程，停止任务检测，等待所有子进程退出后在退出
-        while($this->child_num > 0){
+        while(count($this->child_pid) > 0){
             $this->waitChild();
         }
         //删除pid文件
@@ -482,18 +456,24 @@ class Master{
     //初始化子进程
     private function initChild()
     {
-        for($i=0;$i<$this->min_child_num;$i++){
+        for($i=0;$i<$this->child_num;$i++){
             $pid=pcntl_fork();
             if($pid == -1){
                 $this->log->error("fork child process fail");
                 exit("fork child process fail");
             }else if($pid != 0){
-                $this->child_num++;
                 $this->child_pid[]=$pid;
             }else{
+                $worker=new Worker($this->name."_worker");
                 //todo 等待接受处理任务信号
             }
         }
+    }
+
+    //轮询选取一个子进程执行任务
+    private function chooseChildWork()
+    {
+
     }
 
 }
