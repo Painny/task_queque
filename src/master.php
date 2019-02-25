@@ -144,9 +144,10 @@ class Master{
         }
 
         //轮询选取一个子进程去执行任务
-        $this->chooseChild();
-
-
+        $childPid=$this->chooseChild();
+        if(!posix_kill($childPid,SIGUSR1)){
+            $this->log->error("send do task signal fail");
+        }
     }
 
     //监听处理僵尸子进程
