@@ -154,21 +154,18 @@ class Master{
     private function waitChild()
     {
         $status=0;
-        $pid=pcntl_wait($status,WUNTRACED);
+        $pid=pcntl_wait($status);
 
         if($pid <= 0){
-            //没有子进程，等待1秒,避免wait直接返回主循环过快占用cpu资源
-            sleep(1);
             return;
         }
 
-        //从子进程数组中移除
+        //更新子进程数组
         $childArr=array_flip($this->child_pid);
         unset($childArr[$pid]);
         $this->child_pid=array_keys($childArr);
 
-        //更新子进程数量
-        $this->child_num=count($this->child_pid);
+        
     }
 
     //接收命令
