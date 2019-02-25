@@ -16,30 +16,20 @@ class Worker{
     //进程pid
     public $pid;
 
-    public function __construct($name,$taskData)
+    public function __construct($name)
     {
-        $pid=pcntl_fork();
-
-        if($pid == 0){
-            $this->name=$name;
-            try{
-                $this->init($taskData);
-            }catch (Exception $exception){
-                echo "exception:".$exception->getMessage().PHP_EOL;
-                exit();
-            }
-        }else{
-            $this->pid=$pid;
-        }
+        $this->name=$name;
+        $this->init();
     }
 
     //初始化
-    private function init($taskData)
+    private function init()
     {
         cli_set_process_title($this->name);
-        $this->pid=getmypid();
+        $this->pid=posix_getpid();
         $this->connectRedis();
-        $this->doTask($taskData);
+        //安装信号处理器
+        $this->installSignal();
     }
 
     //连接redis
@@ -55,14 +45,18 @@ class Worker{
         $this->redis=$redis;
     }
 
+    //安装信号处理器
+    private function installSignal()
+    {
+        //有任务需要获取并执行
+        pcntl_signal(SIGUSR1,array($this,"doTask"));
+        //todo 重载配置文件
+    }
+
     public function doTask($data)
     {
-
         $task=new Task($this->redis,$data);
         $task->execute();
-        $this->redis->close();
-        //退出进程
-        exit();
     }
 
 
