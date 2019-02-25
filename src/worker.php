@@ -76,7 +76,10 @@ class Worker{
     private function stop()
     {
         //判断当前是否在执行任务
-
+        while ($this->isWorking){
+            sleep(1);
+        }
+        exit(0);
     }
 
     //获取、执行任务
@@ -116,9 +119,13 @@ class Worker{
          */
         $taskData=array("type"=>$taskType,"data"=>$taskData);
 
+        //更新当前状态
+        $this->isWorking=true;
+
         //执行任务
         $task=new Task($this->redis,$taskData);
         $task->execute();
+        $this->isWorking=false;
     }
 
 
