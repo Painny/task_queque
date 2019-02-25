@@ -14,7 +14,10 @@ class Worker{
     private $redis;
 
     //进程pid
-    public $pid;
+    private $pid;
+
+    //是否忙碌
+    private $isWorking;
 
     public function __construct($name)
     {
@@ -27,6 +30,7 @@ class Worker{
     {
         cli_set_process_title($this->name);
         $this->pid=posix_getpid();
+        $this->isWorking=false;
         $this->connectRedis();
         //安装信号处理器
         $this->installSignal();
@@ -53,7 +57,7 @@ class Worker{
         //有任务需要获取并执行
         pcntl_signal(SIGUSR1,array($this,"doTask"));
         //退出
-//        pcntl_signal(SIGTERM,array($this,"stop"));
+        pcntl_signal(SIGTERM,array($this,"stop"));
         //todo 重载配置文件
     }
 
@@ -61,7 +65,6 @@ class Worker{
     private function listen()
     {
         while (true){
-            echo "child listen:".$this->pid.PHP_EOL;
             pcntl_signal_dispatch();
             //堵塞等待信号(系统调用会堵塞，信号会终端系统调用)
             sleep(100);
@@ -69,9 +72,16 @@ class Worker{
         }
     }
 
+    //退出
+    private function stop()
+    {
+        //判断当前是否在执行任务
+
+    }
+
+    //获取、执行任务
     private function doTask()
     {
-        file_put_contents("/var/www/html/task_queque/log/worklog.log","{$this->pid}:doTask".PHP_EOL,FILE_APPEND );return;
         //检测redis是否断线
         if($this->redis->ping()!=="+PONG"){
             $this->connectRedis();
