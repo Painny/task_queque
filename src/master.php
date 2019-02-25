@@ -341,7 +341,7 @@ class Master{
     {
         //linux颜色输出对应值
         $red = "\033[31m";
-        $green = "\033[42m";
+        $green = "\033[32m";
         $end = "\033[0m";
 
         if(!$this->isRunning()){
