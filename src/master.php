@@ -345,14 +345,15 @@ class Master{
         $end = "\033[0m";
 
         if(!$this->isRunning()){
-            $info="system is <r>stoped<\r>\n";
+            $info="system is <h>stoped<\h>\n";
         }else{
             //守护进程pid
             $pid=$this->getPid();
-            $info="main process is <g>running</g>,the pid file is {$this->pidFile},pid is {$pid}\n";
+            $info="main process is <g>running<\g>,the pid file is {$this->pidFile},pid is {$pid}\n";
         }
 
-        $info=str_replace(array("<r>","<g>","</r>","</g>"),array($red,$green,$end,$end),$info);
+        $info=str_replace(array("<h>","<g>"),array($red,$green),$info);
+        $info=str_replace(array("<\h>","<\g>"),$end,$info);
         return $info;
     }
 
