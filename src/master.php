@@ -339,19 +339,20 @@ class Master{
     //运行状态信息
     private function status()
     {
-        if(!$this->isRunning()){
-            return "system is <r>stoped<\r>\n";
-        }
         //linux颜色输出对应值
         $red = "\033[31m";
         $green = "\033[40m";
         $end = "\033[0m";
 
-        //守护进程pid
-        $pid=$this->getPid();
+        if(!$this->isRunning()){
+            $info="system is <r>stoped<\r>\n";
+        }else{
+            //守护进程pid
+            $pid=$this->getPid();
+            $info="main process is <g>running</g>,the pid file is {$this->pidFile},pid is {$pid}\n";
+        }
 
-        $info="main process is <g>running</g>,the pid file is {$this->pidFile},pid is {$pid}\n";
-        $info=str_replace(array("<r>","<g>","</r>","</g?"),array($red,$green,$end,$end),$info);
+        $info=str_replace(array("<r>","<g>","</r>","</g>"),array($red,$green,$end,$end),$info);
         return $info;
     }
 
