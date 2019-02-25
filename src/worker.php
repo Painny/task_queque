@@ -30,6 +30,8 @@ class Worker{
         $this->connectRedis();
         //安装信号处理器
         $this->installSignal();
+        //开始监听信号
+        $this->listen();
     }
 
     //连接redis
@@ -51,6 +53,18 @@ class Worker{
         //有任务需要获取并执行
         pcntl_signal(SIGUSR1,array($this,"doTask"));
         //todo 重载配置文件
+    }
+
+    //监听信号
+    private function listen()
+    {
+        $status=0;
+        while (true){
+            pcntl_signal_dispatch();
+            //堵塞等待信号
+            pcntl_wait($status);
+            pcntl_signal_dispatch();
+        }
     }
 
     public function doTask($data)
