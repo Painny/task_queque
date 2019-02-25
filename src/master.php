@@ -153,6 +153,17 @@ class Master{
             $this->connectRedis();
         }
 
+        //检测是否有可用任务
+        $hasTask=$this->redis->lLen(config("task","list"));
+
+        if(!$hasTask){
+            return;
+        }
+
+        //todo 在主进程不获取任务数据，有任务时通知空闲的子进程或者fork子进程完成获取任务数据并执行
+
+        //------------------------------------
+
         //从所有任务类型列表中获取可以执行的任务类型
         $taskType=$this->redis->rPop(config("task","list"));
         //无任务
