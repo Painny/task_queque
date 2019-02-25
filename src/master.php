@@ -56,6 +56,7 @@ class Master{
     {
         $this->name=$name;
         $this->child_num=$child_num;
+        $this->child_pid=[];
         $this->index=0;
 
         $this->task_check_time=$task_check_time;
@@ -427,7 +428,7 @@ class Master{
     //初始化子进程
     private function initChild()
     {
-        for($i=0;$i<$this->child_num;$i++){
+        while($this->child_num > count($this->child_pid)){
             $pid=pcntl_fork();
             if($pid == -1){
                 $this->log->error("fork child process fail");
@@ -435,6 +436,7 @@ class Master{
             }else if($pid != 0){
                 $this->child_pid[]=$pid;
             }else{
+                //子进程堵塞等待信号
                 new Worker($this->name."_worker");
             }
         }
