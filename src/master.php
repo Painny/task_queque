@@ -165,7 +165,7 @@ class Master{
         unset($childArr[$pid]);
         $this->child_pid=array_keys($childArr);
 
-        
+
     }
 
     //接收命令
