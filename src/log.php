@@ -79,16 +79,16 @@ class Log{
             $replacement=array(
                 date("Y/m/d H:i:s"),
                 $level,
-                isset($msg["code"])?$msg["code"]:"--",
-                isset($msg["line"])?$msg["line"]:"--",
+                isset($msg["code"])?$msg["code"]:"-- code",
+                isset($msg["line"])?$msg["line"]:"-- line",
                 isset($msg["msg"])?$msg["msg"]:"--"
             );
         }else{
             $replacement=array(
                 date("Y/m/d H:i:s"),
                 $level,
-                "--",
-                "--",
+                "-- code",
+                "-- line",
                 $msg
             );
         }
