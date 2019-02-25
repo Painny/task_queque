@@ -409,10 +409,16 @@ class Master{
     //执行重载信号
     private function reloadConfig()
     {
+        //重载自身配置
         global $CFG;
 
         $file=__DIR__."/config.php";
         $CFG=require $file;
+
+        //向子进程发送重载信号
+        foreach ($this->child_pid as $childPid){
+            posix_kill($childPid,SIGUSR2);
+        }
     }
 
     //监听处理信号、子进程等(主循环)
