@@ -464,8 +464,7 @@ class Master{
             }else if($pid != 0){
                 $this->child_pid[]=$pid;
             }else{
-                $worker=new Worker($this->name."_worker");
-                //todo 等待接受处理任务信号
+                new Worker($this->name."_worker");
             }
         }
     }
