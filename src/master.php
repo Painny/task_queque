@@ -375,10 +375,11 @@ class Master{
         $pid=$this->getPid();
         //向守护进程发送停止信号
         posix_kill($pid,SIGTERM);
-
+        $this->log->info("向主进程发送stop信号");
         //最多等待10秒，未停止则失败
         for($i=0;$i<10;$i++){
             if(!$this->isRunning()){
+                $this->log->info("查询到主进程退出完毕");
                 exit("stop success\n");
             }
             sleep(1);
@@ -393,11 +394,12 @@ class Master{
         foreach ($this->child_pid as $childPid){
             posix_kill($childPid,SIGTERM);
         }
-
+        $this->log->info("主进程向所有进程发送stop信号");
         //等待所有子进程退出后在退出
         while(count($this->child_pid) > 0){
             $this->waitChild();
         }
+        $this->log->info("所有子进程退出完毕");
         //删除pid文件
         unlink($this->pidFile);
         exit(0);
