@@ -56,10 +56,11 @@ class Worker{
     }
 
     //监听信号
-    private function listen()
+    public function listen()
     {
         $status=0;
         while (true){
+            echo "child listen:".$this->pid.PHPEOL;
             pcntl_signal_dispatch();
             //堵塞等待信号
             pcntl_wait($status);
