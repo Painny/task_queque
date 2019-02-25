@@ -58,7 +58,8 @@ class Worker{
         pcntl_signal(SIGUSR1,array($this,"doTask"));
         //退出
         pcntl_signal(SIGTERM,array($this,"stop"));
-        //todo 重载配置文件
+        //重新加载配置文件
+        pcntl_signal(SIGUSR2,array($this,"reloadConfig"));
     }
 
     //监听信号
@@ -82,9 +83,19 @@ class Worker{
         exit(0);
     }
 
+    //重新加载配置文件
+    private function reloadConfig()
+    {
+        global $CFG;
+
+        $file=__DIR__."/config.php";
+        $CFG=require $file;
+    }
+
     //获取、执行任务
     private function doTask()
     {
+        echo config("log","max_size").PHP_EOL;return;
         //检测redis是否断线
         if($this->redis->ping()!=="+PONG"){
             $this->connectRedis();
