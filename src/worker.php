@@ -76,12 +76,10 @@ class Worker{
     //退出
     private function stop()
     {
-        $this->log->info("子进程{$this->pid} 接收到stop信号");
         //判断当前是否在执行任务
         while ($this->isWorking){
             sleep(1);
         }
-        $this->log->info("子进程{$this->pid} 退出");
         exit(0);
     }
 
