@@ -79,7 +79,6 @@ class Worker{
         while ($this->isWorking){
             sleep(1);
         }
-        file_put_contents("/var/www/html/task_queque/log/worklog.log","isWorking is false",FILE_APPEND);
         exit(0);
     }
 
