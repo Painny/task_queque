@@ -80,6 +80,9 @@ class Master{
             $this->daemonize();
         }
 
+        //初始化子进程
+        $this->initChild();
+
         //安装信号处理函数
         $this->installSignal();
 
@@ -463,7 +466,23 @@ class Master{
             //再次检测
             pcntl_signal_dispatch();
         }
+    }
 
+    //初始化子进程
+    private function initChild()
+    {
+        for($i=0;$i<$this->min_child_num;$i++){
+            $pid=pcntl_fork();
+            if($pid == -1){
+                $this->log->error("fork child process fail");
+                exit("fork child process fail");
+            }else if($pid != 0){
+                $this->child_num++;
+                $this->child_pid[]=$pid;
+            }else{
+                //todo 等待接受处理任务信号
+            }
+        }
     }
 
 }
