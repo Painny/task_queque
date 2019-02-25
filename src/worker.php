@@ -58,12 +58,11 @@ class Worker{
     //监听信号
     public function listen()
     {
-        $status=0;
         while (true){
             echo "child listen:".$this->pid.PHP_EOL;
             pcntl_signal_dispatch();
-            //堵塞等待信号
-            pcntl_wait($status);
+            //堵塞等待信号(系统调用会堵塞，信号会终端系统调用)
+            sleep(100);
             pcntl_signal_dispatch();
         }
     }
