@@ -52,11 +52,13 @@ class Worker{
     {
         //有任务需要获取并执行
         pcntl_signal(SIGUSR1,array($this,"doTask"));
+        //退出
+//        pcntl_signal(SIGTERM,array($this,"stop"));
         //todo 重载配置文件
     }
 
     //监听信号
-    public function listen()
+    private function listen()
     {
         while (true){
             echo "child listen:".$this->pid.PHP_EOL;
@@ -67,8 +69,9 @@ class Worker{
         }
     }
 
-    public function doTask($data)
+    private function doTask()
     {
+        file_put_contents("/var/www/html/task_queque/log/worklog.log","{$this->pid}:doTask".PHP_EOL,FILE_APPEND );return;
         //检测redis是否断线
         if($this->redis->ping()!=="+PONG"){
             $this->connectRedis();
