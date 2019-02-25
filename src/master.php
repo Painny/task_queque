@@ -167,7 +167,7 @@ class Master{
         $this->child_pid=array_keys($childArr);
 
         //补齐子进程数量
-        $this->initChild();
+//        $this->initChild();
     }
 
     //接收命令

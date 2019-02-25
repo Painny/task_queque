@@ -76,10 +76,10 @@ class Worker{
     private function stop()
     {
         //判断当前是否在执行任务
-        file_put_contents("/var/www/html/task_queque/log/worklog.log","isWorking is {$this->isWorking}");
         while ($this->isWorking){
             sleep(1);
         }
+        file_put_contents("/var/www/html/task_queque/log/worklog.log","isWorking is false",FILE_APPEND);
         exit(0);
     }
 
