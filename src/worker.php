@@ -67,7 +67,7 @@ class Worker{
     {
         while (true){
             pcntl_signal_dispatch();
-            //堵塞等待信号(系统调用会堵塞，信号会终端系统调用)
+            //堵塞等待信号(系统调用会堵塞，信号会中断系统调用)
             sleep(100);
             pcntl_signal_dispatch();
         }
