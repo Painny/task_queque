@@ -25,6 +25,12 @@ class Master{
     //log日志实例
     private $log;
 
+    //用于轮询子进程的index
+    private $index;
+
+    //守护进程pid文件
+    private $pidFile="/run/task_queque.pid";
+
     //可接受命令列表
     private $command=[
         "start",
@@ -34,9 +40,6 @@ class Master{
         "testTask",
         "help"
     ];
-
-    //守护进程pid文件
-    private $pidFile="/run/task_queque.pid";
 
     //命令提示信息
     private $commandTips="Usage: php yourfile <command> \n".
@@ -53,6 +56,7 @@ class Master{
     {
         $this->name=$name;
         $this->child_num=$child_num;
+        $this->index=0;
 
         $this->task_check_time=$task_check_time;
         $this->log=new Log();
@@ -139,9 +143,8 @@ class Master{
             return;
         }
 
-        //todo 在主进程不获取任务数据，有任务时通知空闲的子进程或者fork子进程完成获取任务数据并执行
         //轮询选取一个子进程去执行任务
-        $this->chooseChildWork();
+        $this->chooseChild();
 
 
     }
@@ -439,10 +442,17 @@ class Master{
         }
     }
 
-    //轮询选取一个子进程执行任务
-    private function chooseChildWork()
+    //轮询选取一个子进程pid
+    private function chooseChild()
     {
+        //获取当前子进程数量
+        $count=count($this->child_pid);
 
+        //获取一个可用child_pid的索引
+        $index=$this->index%$count;
+
+        $this->index++;
+        return $this->child_pid[$index];
     }
 
 }
