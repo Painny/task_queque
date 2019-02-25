@@ -168,6 +168,11 @@ class Master{
 
         //补齐子进程数量(异常退出)
         if($status != 0){
+            $signal="unknown";
+            if(pcntl_wifsignaled($status)){
+                $signal=pcntl_wtermsig($status);
+            }
+            $this->log->notice("process exit abnormal,exit status is {$status},get signal is ".$signal);
             $this->initChild();
         }
     }
