@@ -69,7 +69,42 @@ class Worker{
 
     public function doTask($data)
     {
-        $task=new Task($this->redis,$data);
+        //检测redis是否断线
+        if($this->redis->ping()!=="+PONG"){
+            $this->connectRedis();
+        }
+
+        //从所有任务类型列表中获取可以执行的任务类型
+        $taskType=$this->redis->rPop(config("task","list"));
+        //无任务
+        if(!$taskType){
+            return;
+        }
+
+        //无效任务类型
+        if(!in_array($taskType,config("task","type"))){
+            return;
+        }
+
+        //从该类型的任务列表中取除具体任务数据
+        $taskData=$this->redis->rPop($taskType);
+        if(!$taskData){
+            return;
+        }
+
+        /*
+         * 生成学生付款码任务数据：
+         *  {
+         *      "flag":0|1|2,                               生成文件包含内容，0二维码，1文本，2两者
+         *      "code_list_key":"pay_code_list_xxx"         存付款码列表的redis key
+         *      "email":"xxx@xxx.com"                       要发送的邮箱地址
+         *      "file":"xxx.zip"                            将要生成文件的名字
+         *  }
+         */
+        $taskData=array("type"=>$taskType,"data"=>$taskData);
+
+        //执行任务
+        $task=new Task($this->redis,$taskData);
         $task->execute();
     }
 
