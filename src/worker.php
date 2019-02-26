@@ -77,12 +77,12 @@ class Worker{
     private function stop()
     {
         $file="/var/www/html/task_queque/log/worklog.log";
-        file_put_contents($file,"子进程{$this->pid}接收到stop信号".PHP_EOL,FILE_APPEND);
+        file_put_contents($file,date("Y/m/d H:i:s")." [info] 子进程{$this->pid}接收到stop信号".PHP_EOL,FILE_APPEND);
         //判断当前是否在执行任务
         while ($this->isWorking){
             sleep(1);
         }
-        file_put_contents($file,"子进程{$this->pid}退出".PHP_EOL,FILE_APPEND);
+        file_put_contents($file,date("Y/m/d H:i:s")." [info] 子进程{$this->pid}退出".PHP_EOL,FILE_APPEND);
         exit(0);
     }
 
