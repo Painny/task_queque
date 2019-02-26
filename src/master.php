@@ -157,7 +157,7 @@ class Master{
         $this->log->info("守护进程waitChild");
         $status=0;
         $pid=pcntl_wait($status);
-
+        $this->log->info("守护进程waitChild被信号中断,status is {$status},pid is {$pid}");
         if($pid <= 0){
             return;
         }
@@ -390,7 +390,7 @@ class Master{
     //执行停止所有进程信号
     private function stopAll()
     {
-        $this->log->info("守护进程收到stop信号");
+        $this->log->info("守护进程执行stop信号");
         //向子进程发送停止信号
         foreach ($this->child_pid as $childPid){
             posix_kill($childPid,SIGTERM);
@@ -435,7 +435,6 @@ class Master{
     private function monitor()
     {
         while (true){
-            $this->log->info("守护进程主循环");
             //检测是否有信号可捕捉处理
             pcntl_signal_dispatch();
 
