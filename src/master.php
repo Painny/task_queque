@@ -457,6 +457,7 @@ class Master{
                 //子进程堵塞等待信号
                 $worker=new Worker($this->name."_worker");
                 $worker->listen();
+
                 //如果子进程意外退出监听循环，记录日志
                 $this->log->error("worker process break out the listen");
                 exit(250);
