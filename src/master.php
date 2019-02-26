@@ -377,7 +377,7 @@ class Master{
         $pid=$this->getPid();
         //向守护进程发送停止信号
         posix_kill($pid,SIGTERM);
-        $this->log->info("向守护进程发送stop信号");
+
         //最多等待10秒，未停止则失败
         for($i=0;$i<10;$i++){
             if(!$this->isRunning()){
@@ -420,6 +420,7 @@ class Master{
     //执行重载信号
     private function reloadConfig()
     {
+        echo date("Y/m/d H:i:s")." reloadConfig".PHP_EOL;
         //重载自身配置
         global $CFG;
 
