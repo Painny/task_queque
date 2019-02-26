@@ -362,9 +362,9 @@ class Master{
     //安装信号
     private function installSignal()
     {
+        pcntl_signal(SIGALRM,array($this,"checkTask"));
         pcntl_signal(SIGTERM,array($this,"stopAll"));
         pcntl_signal(SIGUSR1,array($this,"reloadConfig"));
-        pcntl_signal(SIGALRM,array($this,"checkTask"));
     }
 
     //发送停止所有进程信号
