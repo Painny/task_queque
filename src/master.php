@@ -88,7 +88,7 @@ class Master{
         $this->connectRedis();
 
         //开始任务检测
-        $this->checkTask();
+//        $this->checkTask();
 
         //开始监听处理信号等
         $this->monitor();
