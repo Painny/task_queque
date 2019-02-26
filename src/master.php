@@ -129,7 +129,7 @@ class Master{
     //检测任务
     private function checkTask()
     {
-        echo "checkTask".PHP_EOL;
+        echo date("Y/m/d H:i:s")." checkTask".PHP_EOL;
         //定时发送alarm信号，出发任务检测
         pcntl_alarm($this->task_check_time);
 
@@ -155,10 +155,10 @@ class Master{
     //监听处理僵尸子进程
     private function waitChild()
     {
-        echo "waitChild".PHP_EOL;
+        echo date("Y/m/d H:i:s")." waitChild".PHP_EOL;
         $status=0;
         $pid=pcntl_wait($status);
-        echo "waitChild break".PHP_EOL;
+        echo date("Y/m/d H:i:s")." waitChild break".PHP_EOL;
         if($pid <= 0){
             return;
         }
@@ -391,7 +391,7 @@ class Master{
     //执行停止所有进程信号
     private function stopAll()
     {
-        $this->log->info("守护进程执行stop信号");
+        echo date("Y/m/d H:i:s")." stopAll".PHP_EOL;
         //向子进程发送停止信号
         foreach ($this->child_pid as $childPid){
             posix_kill($childPid,SIGTERM);
