@@ -154,6 +154,7 @@ class Master{
     //监听处理僵尸子进程
     private function waitChild()
     {
+        $this->log->info("守护进程waitChild");
         $status=0;
         $pid=pcntl_wait($status);
 
@@ -434,6 +435,7 @@ class Master{
     private function monitor()
     {
         while (true){
+            $this->log->info("守护进程主循环");
             //检测是否有信号可捕捉处理
             pcntl_signal_dispatch();
 
