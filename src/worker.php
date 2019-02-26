@@ -34,8 +34,6 @@ class Worker{
         $this->connectRedis();
         //安装信号处理器
         $this->installSignal();
-        //开始监听信号
-        $this->listen();
     }
 
     //连接redis
@@ -63,7 +61,7 @@ class Worker{
     }
 
     //监听信号
-    private function listen()
+    public function listen()
     {
         while (true){
             pcntl_signal_dispatch();
