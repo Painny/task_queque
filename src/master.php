@@ -129,7 +129,6 @@ class Master{
     //检测任务
     private function checkTask()
     {
-        echo date("Y/m/d H:i:s")." checkTask".PHP_EOL;
         //定时发送alarm信号，出发任务检测
         pcntl_alarm($this->task_check_time);
 
@@ -155,10 +154,10 @@ class Master{
     //监听处理僵尸子进程
     private function waitChild()
     {
-        echo date("Y/m/d H:i:s")." waitChild".PHP_EOL;
+        $this->log->info("waitChild");
         $status=0;
         $pid=pcntl_wait($status,WUNTRACED);
-        echo date("Y/m/d H:i:s")." waitChild break".PHP_EOL;
+        $this->log->info("waitChild break");
         if($pid <= 0){
             return;
         }
@@ -377,10 +376,11 @@ class Master{
         $pid=$this->getPid();
         //向守护进程发送停止信号
         posix_kill($pid,SIGTERM);
-
+        $this->log->info("发送stop信号给守护进程");
         //最多等待10秒，未停止则失败
         for($i=0;$i<10;$i++){
             if(!$this->isRunning()){
+                $this->log->info("确认stop成功");
                 exit("stop success\n");
             }
             sleep(1);
@@ -391,17 +391,17 @@ class Master{
     //执行停止所有进程信号
     private function stopAll()
     {
-        echo date("Y/m/d H:i:s")." stopAll".PHP_EOL;
+        $this->log->info("守护进程执行stop信号");
         //向子进程发送停止信号
         foreach ($this->child_pid as $childPid){
             posix_kill($childPid,SIGTERM);
         }
-
+        $this->log->info("守护进程向子进程发送stop信号完毕");
         //等待所有子进程退出后在退出
         while(count($this->child_pid) > 0){
             $this->waitChild();
         }
-
+        $this->log->info("所有子进程退出完毕，守护进程退出");
         //删除pid文件
         unlink($this->pidFile);
         exit(0);
@@ -420,7 +420,6 @@ class Master{
     //执行重载信号
     private function reloadConfig()
     {
-        echo date("Y/m/d H:i:s")." reloadConfig".PHP_EOL;
         //重载自身配置
         global $CFG;
 
