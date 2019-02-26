@@ -88,7 +88,7 @@ class Master{
         $this->connectRedis();
 
         //开始任务检测
-//        $this->checkTask();
+        $this->checkTask();
 
         //开始监听处理信号等
         $this->monitor();
@@ -129,7 +129,7 @@ class Master{
     //检测任务
     private function checkTask()
     {
-        $this->log->info("in checkTask");
+        echo "checkTask".PHP_EOL;
         //定时发送alarm信号，出发任务检测
         pcntl_alarm($this->task_check_time);
 
@@ -155,10 +155,10 @@ class Master{
     //监听处理僵尸子进程
     private function waitChild()
     {
-        $this->log->info("守护进程waitChild");
+        echo "waitChild".PHP_EOL;
         $status=0;
         $pid=pcntl_wait($status);
-        $this->log->info("守护进程waitChild被信号中断,status is {$status},pid is {$pid}");
+        echo "waitChild break".PHP_EOL;
         if($pid <= 0){
             return;
         }
