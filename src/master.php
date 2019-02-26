@@ -154,10 +154,9 @@ class Master{
     //监听处理僵尸子进程
     private function waitChild()
     {
-        $this->log->info("waitChild");
         $status=0;
         $pid=pcntl_wait($status,WUNTRACED);
-        $this->log->info("waitChild break");
+
         if($pid <= 0){
             return;
         }
@@ -202,7 +201,6 @@ class Master{
                 if(isset($argv[2]) && $argv[2] == "-d"){
                     //判断是否已经在以守护进程模式运行
                     if($this->isRunning()){
-                        $this->log->info("the system is already run in deamonize");
                         exit("the system is already run in deamonize,pid file is ".$this->pidFile);
                     }
                     $deamonize=true;
@@ -376,11 +374,10 @@ class Master{
         $pid=$this->getPid();
         //向守护进程发送停止信号
         posix_kill($pid,SIGTERM);
-        $this->log->info("发送stop信号给守护进程");
+
         //最多等待10秒，未停止则失败
         for($i=0;$i<10;$i++){
             if(!$this->isRunning()){
-                $this->log->info("确认stop成功");
                 exit("stop success\n");
             }
             sleep(1);
@@ -391,17 +388,16 @@ class Master{
     //执行停止所有进程信号
     private function stopAll()
     {
-        $this->log->info("守护进程执行stop信号");
         //向子进程发送停止信号
         foreach ($this->child_pid as $childPid){
             posix_kill($childPid,SIGTERM);
         }
-        $this->log->info("守护进程向子进程发送stop信号完毕");
+
         //等待所有子进程退出后在退出
         while(count($this->child_pid) > 0){
             $this->waitChild();
         }
-        $this->log->info("所有子进程退出完毕，守护进程退出");
+
         //删除pid文件
         unlink($this->pidFile);
         exit(0);
