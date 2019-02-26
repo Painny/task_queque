@@ -157,7 +157,7 @@ class Master{
     {
         echo date("Y/m/d H:i:s")." waitChild".PHP_EOL;
         $status=0;
-        $pid=pcntl_wait($status);
+        $pid=pcntl_wait($status,WUNTRACED);
         echo date("Y/m/d H:i:s")." waitChild break".PHP_EOL;
         if($pid <= 0){
             return;
