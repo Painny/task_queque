@@ -379,7 +379,6 @@ class Master{
         //最多等待10秒，未停止则失败
         for($i=0;$i<10;$i++){
             if(!$this->isRunning()){
-                $this->log->info("查询所有子进程到退出成功,自身退出");
                 exit("stop success\n");
             }
             sleep(1);
@@ -390,17 +389,17 @@ class Master{
     //执行停止所有进程信号
     private function stopAll()
     {
-        $this->log->info("主进程接收到stop信号");
+        $this->log->info("守护进程收到stop信号");
         //向子进程发送停止信号
         foreach ($this->child_pid as $childPid){
             posix_kill($childPid,SIGTERM);
         }
-        $this->log->info("主进程向所有子进程发送完stop信号");
+
         //等待所有子进程退出后在退出
         while(count($this->child_pid) > 0){
             $this->waitChild();
         }
-        $this->log->info("主进程子进程退出完毕");
+
         //删除pid文件
         unlink($this->pidFile);
         exit(0);
