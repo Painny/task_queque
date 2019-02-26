@@ -55,11 +55,11 @@ class Worker{
     private function installSignal()
     {
         //有任务需要获取并执行
-        pcntl_signal(SIGUSR1,array($this,"doTask"));
+        pcntl_signal(SIGUSR1,array($this,"doTask"),false);
         //退出
-        pcntl_signal(SIGTERM,array($this,"stop"));
+        pcntl_signal(SIGTERM,array($this,"stop"),false);
         //重新加载配置文件
-        pcntl_signal(SIGUSR2,array($this,"reloadConfig"));
+        pcntl_signal(SIGUSR2,array($this,"reloadConfig"),false);
     }
 
     //监听信号
