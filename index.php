@@ -7,6 +7,7 @@
  */
 
 require_once "./vendor/autoload.php";
+
 $CFG= require_once "./src/config.php";
 
 $master=new Master("task_queque");
