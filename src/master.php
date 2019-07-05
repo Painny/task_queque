@@ -29,7 +29,7 @@ class Master{
     private $index;
 
     //守护进程pid文件
-    private $pidFile="/run/task_queque.pid";
+    private $pidFile="/run/task_queue.pid";
 
     //可接受命令列表
     private $command=[
@@ -52,7 +52,7 @@ class Master{
                          "  help:get the help info\n";
 
 
-    public function __construct($name="task_queque",$child_num=2,$task_check_time=10)
+    public function __construct($name="task_queue",$child_num=2,$task_check_time=10)
     {
         $this->name=$name;
         $this->child_num=$child_num;
