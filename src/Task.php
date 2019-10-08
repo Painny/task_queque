@@ -74,9 +74,9 @@ class Task{
             $txt="";
             $numberTxt="";
             foreach ($allCode as $index => $code){
-                $txt.=$code.PHP_EOL;
+                $txt.=$code."\r\n";
                 if($type == "make_teacher_code"){
-                    $numberTxt.=$data["agent"].$index.PHP_EOL;
+                    $numberTxt.=$data["agent"].$index."\r\n";
                 }
             }
             $zip->addFromString("code.txt",$txt);
